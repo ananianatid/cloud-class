@@ -19,8 +19,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'jane doe',
             'email' => 'JaneDoe@gmail.com',
             'password'=>'password',
-            // 'role'=>'etudiant',
-            // 'sexe'=>'F'
+            'role'=>'etudiant',
+            'sexe'=>'F'
         ]);
     }
 }
