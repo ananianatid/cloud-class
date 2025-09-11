@@ -21,7 +21,6 @@ return new class extends Migration
             $table->date('graduatin')->nullable();
             $table->string('parent')->nullable();
             $table->string('telephone_parent')->nullable();
-            $table->string('telephone_parent')->nullable();
             $table->enum('statut',['actif','diplome','suspendu','abandon']);
             $table->timestamps();
         });
