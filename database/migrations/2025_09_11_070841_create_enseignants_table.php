@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->longText('bio')->nullable();
-            $table->foreignId('specialite_id')->constrained('specialites')->onDelete();
+            $table->foreignId('specialite_id')->constrained('specialites')->onDelete('cascade');
             $table->enum('statut', ['permanent', 'vacataire', 'invite'])->default('permanent');
             $table->softDeletes();
             $table->timestamps();
