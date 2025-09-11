@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Database\Seeders\EnrollmentKeySeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -22,5 +23,10 @@ class DatabaseSeeder extends Seeder
             'role'=>'etudiant',
             'sexe'=>'F'
         ]);
+
+        $this->call(DiplomeSeeder::class);
+        $this->call(FiliereSeeder::class);
+        $this->call(PromotionSeeder::class);
+        $this->call(EnrollmentKeySeeder::class);
     }
 }

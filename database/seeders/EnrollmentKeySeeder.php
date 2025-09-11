@@ -2,16 +2,18 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\EnrollmentKey;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class EnrollmentKeySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //
+        EnrollmentKey::query()->create([
+            'key' => Str::upper(Str::random(10)),
+            'promotion_id' => 1,
+        ]);
     }
 }
+

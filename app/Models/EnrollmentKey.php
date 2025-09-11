@@ -57,13 +57,3 @@ class EnrollmentKey extends Model
     }
 }
 
-<?php
-
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-class EnrollmentKey extends Model
-{
-    //
-}
