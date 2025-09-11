@@ -36,6 +36,11 @@
                 <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
             </div>
 
+            <div class="mt-4">
+                <x-label for="enrollment_key" value="{{ __('Clé d\'enrôlement (étudiants uniquement)') }}" />
+                <x-input id="enrollment_key" class="block mt-1 w-full" type="text" name="enrollment_key" :value="old('enrollment_key')" required />
+            </div>
+
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
                 <div class="mt-4">
                     <x-label for="terms">
