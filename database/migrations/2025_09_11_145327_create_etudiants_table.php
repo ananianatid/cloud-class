@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('etudiants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('user')->onDelete('null');
-            $table->foreignId('promotion_id')->constrained('promotions')->onDelete('null');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('promotion_id')->constrained('promotions')->cascadeOnDelete();
             $table->string('matricule')->nullable()->unique();
             $table->date('naissance');
             // $table->date('inscripton');
