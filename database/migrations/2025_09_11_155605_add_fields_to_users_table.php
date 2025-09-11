@@ -15,7 +15,6 @@ return new class extends Migration
             $table->string('telephone')->nullable();
             $table->enum('role',['etudiant','enseignant','administrateur']);
             $table->enum('sexe',['M','F']);
-            $table->string('photo')->nullable();
         });
     }
 
@@ -25,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['telephone','role','sexe','photo']);
+            $table->dropColumn(['telephone','role','sexe']);
         });
     }
 };
