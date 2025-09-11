@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('adresse')->nullable();
             $table->enum('role', ["etudiant","enseignant","administrateur"])->index();
             $table->enum('sexe', ["M","F"]);
-            $table->string('photo');
+            $table->string('photo')->nullable();
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();
