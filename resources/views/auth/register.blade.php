@@ -37,7 +37,7 @@
             </div>
 
             <div class="mt-4">
-                <x-label for="enrollment_key" value="{{ __('Clé d\'enrôlement (étudiants uniquement)') }}" />
+                <x-label for="enrollment_key" value="{{ __('Clé etudiant') }}" />
                 <x-input id="enrollment_key" class="block mt-1 w-full" type="text" name="enrollment_key" :value="old('enrollment_key')" required />
             </div>
 
