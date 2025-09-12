@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Semestre extends Model
 {
-    //
+    protected $guarded;
 }

@@ -12,6 +12,12 @@ class SemestreSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+    for ($i = 1; $i <= 6; $i++) {
+        \App\Models\Semestre::create([
+            'numero' => $i,
+            'slug' => 'semestre-' . $i,
+            'promotion_id' => 1,
+        ]);
+    }
     }
 }

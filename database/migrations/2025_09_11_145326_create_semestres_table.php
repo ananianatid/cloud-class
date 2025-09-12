@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('numero');
             $table->string('slug')->index();
-            $table->foreignId('promotion-id')->constrained('promotions')->cascadeOnDelete('null');
+            $table->foreignId('promotion_id')->constrained('promotions')->cascadeOnDelete('null');
             $table->softDeletes();
             $table->timestamps();
         });
