@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -65,5 +66,37 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the etudiant associated with the user.
+     */
+    public function etudiant(): HasOne
+    {
+        return $this->hasOne(Etudiant::class);
+    }
+
+    /**
+     * Get the enseignant associated with the user.
+     */
+    public function enseignant(): HasOne
+    {
+        return $this->hasOne(Enseignant::class);
+    }
+
+    /**
+     * Check if the user is an etudiant.
+     */
+    public function isEtudiant(): bool
+    {
+        return $this->role === 'etudiant';
+    }
+
+    /**
+     * Check if the user is an enseignant.
+     */
+    public function isEnseignant(): bool
+    {
+        return $this->role === 'enseignant';
     }
 }

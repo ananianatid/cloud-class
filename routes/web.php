@@ -15,7 +15,7 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard',[PagesController::class,'displaySemesters'])->name('dashboard');
 
-    // Route::get('/test',[TablesController::class,'createSemestre'])->name('test');
+    Route::get('/test',[TablesController::class,'createSemestre'])->name('test');
 
 
 });

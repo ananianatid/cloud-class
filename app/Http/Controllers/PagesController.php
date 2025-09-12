@@ -4,13 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use App\Models\Semestre ;
+use App\Models\Semestre;
+use Illuminate\Support\Facades\Auth;
 class PagesController extends Controller
 {
     public function displaySemesters() {
-        $semestres = Semestre::where('promotion_id', 1)->get();
-        // Créer un nouveau semestre
+        $user = Auth::user();
 
-        return view('dashboard');
+        // Vérifier si l'utilisateur est un étudiant
+        if ($user->role !== 'etudiant') {
+            abort(403, 'Accès non autorisé. Seuls les étudiants peuvent accéder à cette page.');
+        }
+
+        // Récupérer la promotion de l'étudiant connecté
+        $promotionId = $user->etudiant->promotion_id;
+
+        // Récupérer les semestres de cette promotion
+        $semestres = Semestre::where('promotion_id', $promotionId)->get();
+
+        return view('dashboard', compact('semestres'));
     }
 }
