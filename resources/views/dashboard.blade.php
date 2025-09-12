@@ -26,7 +26,7 @@
                 </div>
             @else
                 @foreach ($semestres as $semestre)
-                    <a href="" class="py-2 w-full text-center hover:bg-black hover:text-white hover:rounded-full">
+                    <a href="{{ route('matieres', ['semestre' => $semestre]) }}" class="py-2 w-full text-center hover:bg-black hover:text-white hover:rounded-full">
                         Semestre {{ $semestre->nombre }}
                     </a>
                 @endforeach

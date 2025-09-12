@@ -8,7 +8,7 @@ use App\Models\Semestre;
 use Illuminate\Support\Facades\Auth;
 class PagesController extends Controller
 {
-    public function displaySemesters() {
+    public function displaySemestres() {
         $user = Auth::user();
 
         // Vérifier si l'utilisateur est un étudiant
@@ -23,5 +23,9 @@ class PagesController extends Controller
         $semestres = Semestre::where('promotion_id', $promotionId)->get();
 
         return view('dashboard', compact('semestres'));
+    }
+
+    public function displayMatieres(Semestre $semestre) {
+        return view('pages.subjects',['semestre'=>$semestre]);
     }
 }
