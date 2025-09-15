@@ -32,7 +32,11 @@ class PagesController extends Controller
 
     }
 
-    public function displayFichiers(Matiere $matiere){
+    public function displayFichiers(Semestre $semestre, Matiere $matiere){
+        if ($matiere->semestre_id !== $semestre->id) {
+            abort(404);
+        }
+
         $fichiers = $matiere->fichiers ?? collect();
         return view('pages.files', [
             'matiere' => $matiere,
