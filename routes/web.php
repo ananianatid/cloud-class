@@ -15,6 +15,7 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard',[PagesController::class,'displaySemestres'])->name('dashboard');
     Route::get('/semestre-{semestre}/matieres',[PagesController::class,'displayMatieres'])->name('matieres');
+    Route::get('/semestre-{semestre}/{matiere}',[PagesController::class,'displayFichiers'])->name('fichiers');
 
     Route::get('/test',[TablesController::class,'createSemestre'])->name('test');
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Matiere;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Models\Semestre;
@@ -26,6 +27,16 @@ class PagesController extends Controller
     }
 
     public function displayMatieres(Semestre $semestre) {
-        return view('pages.subjects',['semestre'=>$semestre]);
+        $matieres = $semestre->matieres;
+        return view('pages.subjects',['semestre'=>$semestre,'matieres'=>$matieres]);
+
+    }
+
+    public function displayFichiers(Matiere $matiere){
+        $fichiers = $matiere->fichiers ?? collect();
+        return view('pages.files', [
+            'matiere' => $matiere,
+            'fichiers' => $fichiers,
+        ]);
     }
 }
