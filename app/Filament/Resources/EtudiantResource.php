@@ -28,7 +28,7 @@ class EtudiantResource extends Resource
                     ->relationship('user', 'name')
                     ->required(),
                 Forms\Components\Select::make('promotion_id')
-                    ->relationship('promotion', 'id')
+                    ->relationship('promotion', 'nom')
                     ->required(),
                 Forms\Components\TextInput::make('matricule')
                     ->maxLength(255),
@@ -50,10 +50,8 @@ class EtudiantResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('promotion.id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('promotion.nom')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('matricule')
                     ->searchable(),

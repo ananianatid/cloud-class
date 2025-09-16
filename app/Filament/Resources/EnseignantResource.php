@@ -24,9 +24,9 @@ class EnseignantResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->required(),
                 Forms\Components\Textarea::make('bio')
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('statut')
@@ -38,8 +38,7 @@ class EnseignantResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('user.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('statut'),
                 Tables\Columns\TextColumn::make('deleted_at')
