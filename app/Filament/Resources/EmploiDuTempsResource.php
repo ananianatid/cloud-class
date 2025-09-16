@@ -2,7 +2,10 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\EmploiDuTempsResource\Pages;
+use App\Filament\Resources\EmploiDuTempsResource\Pages\CreateEmploiDuTemps;
+use App\Filament\Resources\EmploiDuTempsResource\Pages\EditEmploiDuTemps;
+use App\Filament\Resources\EmploiDuTempsResource\Pages\ListEmploiDuTemps;
+use App\Filament\Resources\EmploiDuTempsResource\Pages\ViewEmploiDuTemps;
 use App\Filament\Resources\EmploiDuTempsResource\RelationManagers;
 use App\Models\EmploiDuTemps;
 use Filament\Forms;
@@ -12,6 +15,12 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Illuminate\Support\Str;
+use App\Models\Promotion;
+use App\Models\Semestre;
 
 class EmploiDuTempsResource extends Resource
 {
@@ -23,14 +32,56 @@ class EmploiDuTempsResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('semestre_id')
+                Select::make('promotion_id')
+                    ->options(Promotion::pluck('nom', 'id'))
+                    ->live()
+                    ->dehydrated(false)
+                    ->afterStateUpdated(function (Set $set) {
+                        $set('semestre_id', null);
+                    })
+                    ->required(),
+                Select::make('semestre_id')
+                    ->options(function (Get $get) {
+                        $promotionId = $get('promotion_id');
+                        if (!$promotionId) {
+                            return [];
+                        }
+                        return Semestre::where('promotion_id', $promotionId)
+                            ->pluck('slug', 'id');
+                    })
                     ->required()
-                    ->numeric(),
+                    ->label('Semestre')
+                    ->live()
+                    ->afterStateUpdated(function (Get $get, Set $set) {
+                        $semestre = Semestre::with('promotion')->find($get('semestre_id'));
+                        $categorie = $get('categorie');
+                        if ($semestre && $semestre->promotion && $categorie) {
+                            $set('nom', Str::slug($semestre->promotion->nom . '-' . $semestre->slug . '-' . $categorie));
+                        }
+                    }),
                 Forms\Components\TextInput::make('nom')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('categorie')
-                    ->required(),
+                    ->maxLength(255)
+                    ->disabled()
+                    ->dehydrated(true)
+                    ->unique(ignoreRecord: true),
+                Select::make('categorie')
+                    ->options([
+                        'principal' => 'Principal',
+                        'examen' => 'Examen',
+                        'devoir' => 'Devoir',
+                        'mission' => 'Mission',
+                        'autre' => 'Autre',
+                    ])
+                    ->required()
+                    ->live()
+                    ->afterStateUpdated(function (Get $get, Set $set) {
+                        $semestre = Semestre::with('promotion')->find($get('semestre_id'));
+                        $categorie = $get('categorie');
+                        if ($semestre && $semestre->promotion && $categorie) {
+                            $set('nom', Str::slug($semestre->promotion->nom . '-' . $semestre->slug . '-' . $categorie));
+                        }
+                    }),
                 Forms\Components\Toggle::make('actif')
                     ->required(),
                 Forms\Components\DatePicker::make('debut')
@@ -38,7 +89,6 @@ class EmploiDuTempsResource extends Resource
                 Forms\Components\DatePicker::make('fin')
                     ->required(),
                 Forms\Components\TextInput::make('descrpition')
-                    ->required()
                     ->maxLength(255),
             ]);
     }
@@ -47,8 +97,12 @@ class EmploiDuTempsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('semestre_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('semestre.promotion.nom')
+                    ->label('Promotion')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('semestre.slug')
+                    ->label('Semestre')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('nom')
                     ->searchable(),
@@ -100,10 +154,10 @@ class EmploiDuTempsResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEmploiDuTemps::route('/'),
-            'create' => Pages\CreateEmploiDuTemps::route('/create'),
-            'view' => Pages\ViewEmploiDuTemps::route('/{record}'),
-            'edit' => Pages\EditEmploiDuTemps::route('/{record}/edit'),
+            'index' => ListEmploiDuTemps::route('/'),
+            'create' => CreateEmploiDuTemps::route('/create'),
+            'view' => ViewEmploiDuTemps::route('/{record}'),
+            'edit' => EditEmploiDuTemps::route('/{record}/edit'),
         ];
     }
 }

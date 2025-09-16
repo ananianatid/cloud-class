@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('actif');
             $table->date('debut');
             $table->date('fin');
-            $table->string('descrpition');
+            $table->string('descrpition')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
