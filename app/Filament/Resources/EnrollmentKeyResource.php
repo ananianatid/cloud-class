@@ -17,8 +17,9 @@ class EnrollmentKeyResource extends Resource
 {
     protected static ?string $model = EnrollmentKey::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-key';
     protected static ?string $navigationGroup = 'Administration';
+    protected static ?string $label = 'clé etudiant';
 
     public static function form(Form $form): Form
     {

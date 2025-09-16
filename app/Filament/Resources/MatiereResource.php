@@ -17,7 +17,7 @@ class MatiereResource extends Resource
 {
     protected static ?string $model = Matiere::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-folder';
     protected static ?string $navigationGroup = 'Académique';
 
     public static function form(Form $form): Form
@@ -31,7 +31,10 @@ class MatiereResource extends Resource
                     ->relationship('semestre', 'slug')
                     ->required(),
                 Forms\Components\Select::make('enseignant_id')
-                    ->relationship('enseignant', 'user.name')
+                    ->relationship('enseignant')
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->user?->name ?? '—')
+                    ->searchable()
+                    ->preload()
                     ->required(),
             ]);
     }
