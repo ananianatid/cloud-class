@@ -19,7 +19,7 @@
                 {{ session('error') }}
             </div>
         @endif
-        <div class="w-4/5 border border-gray-300 rounded-2xl p-4 text-gray-700 flex flex-col items-center justify-center gap-4  ">
+        <div class="w-4/5 border border-gray-300 rounded-2xl p-4 text-gray-700 flex flex-col items-center justify-center gap-4 max-w-96 ">
             @if($matieres->isEmpty())
                 <div class="py-2 w-full text-center text-gray-500">
                     Aucun matiere disponible.
