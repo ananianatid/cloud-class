@@ -5,8 +5,12 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\FichierResource\Pages;
 use App\Filament\Resources\FichierResource\RelationManagers;
 use App\Models\Fichier;
+use App\Models\Promotion;
+use App\Models\Semestre;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -24,22 +28,61 @@ class FichierResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('promotion_filter')
+                    ->label('Promotion')
+                    ->options(fn () => Promotion::query()->orderBy('nom')->pluck('nom', 'id'))
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->dehydrated(false)
+                    ->afterStateUpdated(fn (Set $set) => $set('semestre_filter', null)),
+                Forms\Components\Select::make('semestre_filter')
+                    ->label('Semestre')
+                    ->options(fn (Get $get) => Semestre::query()
+                        ->when($get('promotion_filter'), fn ($q, $promotionId) => $q->where('promotion_id', $promotionId))
+                        ->orderBy('slug')
+                        ->pluck('slug', 'id'))
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->dehydrated(false)
+                    ->afterStateUpdated(fn (Set $set) => $set('matiere_id', null)),
                 Forms\Components\Select::make('matiere_id')
-                    ->relationship('matiere', 'id')
+                    ->relationship('matiere', 'id', modifyQueryUsing: fn (Builder $query, Get $get) => (
+                        $get('semestre_filter')
+                            ? $query->where('semestre_id', $get('semestre_filter'))
+                            : $query
+                    ))
+                    ->searchable()
+                    ->preload()
                     ->required(),
-                Forms\Components\TextInput::make('chemin')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\FileUpload::make('chemin')
+                    ->directory('fichiers')
+                    ->preserveFilenames()
+                    ->getUploadedFileNameForStorageUsing(fn ($file) => $file->getClientOriginalName())
+                    ->afterStateUpdated(fn ($state, Set $set) => $set('nom', basename((string) $state)))
+                    ->required(),
                 Forms\Components\TextInput::make('nom')
+                    ->disabled()
+                    ->dehydrated(true)
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('categorie')
+                Forms\Components\Select::make('categorie')
+                    ->options([
+                        'cours' => 'cours',
+                        'td&tp' => 'td&tp',
+                        'evaluation' => 'evaluation',
+                        'devoir' => 'devoir',
+                        'examen' => 'examen',
+                        'autre' => 'autre',
+                    ])
                     ->required(),
                 Forms\Components\Toggle::make('visible')
+                    ->default(true)
                     ->required(),
-                Forms\Components\Select::make('ajoute_par')
-                    ->relationship('auteur', 'name')
-                    ->required(),
+                Forms\Components\Hidden::make('ajoute_par')
+                    ->default(fn () => \Illuminate\Support\Facades\Auth::id())
+                    ->dehydrated(true),
             ]);
     }
 
@@ -50,8 +93,6 @@ class FichierResource extends Resource
                 Tables\Columns\TextColumn::make('matiere.id')
                     ->label('Matière')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('chemin')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('nom')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('categorie'),
