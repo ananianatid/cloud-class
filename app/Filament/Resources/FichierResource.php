@@ -48,19 +48,28 @@ class FichierResource extends Resource
                     ->dehydrated(false)
                     ->afterStateUpdated(fn (Set $set) => $set('matiere_id', null)),
                 Forms\Components\Select::make('matiere_id')
-                    ->relationship('matiere', 'id', modifyQueryUsing: fn (Builder $query, Get $get) => (
-                        $get('semestre_filter')
-                            ? $query->where('semestre_id', $get('semestre_filter'))
-                            : $query
-                    ))
+                    ->label("Unité d'enseignement")
+                    ->options(function (Get $get) {
+                        $query = \App\Models\Matiere::query();
+                        if ($get('semestre_filter')) {
+                            $query->where('semestre_id', $get('semestre_filter'));
+                        }
+                        // Eager load unite relation for performance
+                        $matieres = $query->with('unite')->get();
+                        // Map: [matiere_id => unite.nom]
+                        return $matieres->mapWithKeys(function ($matiere) {
+                            return [$matiere->id => $matiere->unite->nom ?? ''];
+                        })->filter();
+                    })
                     ->searchable()
                     ->preload()
                     ->required(),
                 Forms\Components\FileUpload::make('chemin')
                     ->directory('fichiers')
-                    ->preserveFilenames()
+                    // ->preserveFilenames()
                     ->getUploadedFileNameForStorageUsing(fn ($file) => $file->getClientOriginalName())
                     ->afterStateUpdated(fn ($state, Set $set) => $set('nom', basename((string) $state)))
+                    ->storeFileNamesIn('nom')
                     ->required(),
                 Forms\Components\TextInput::make('nom')
                     ->disabled()

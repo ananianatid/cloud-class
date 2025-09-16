@@ -19,7 +19,7 @@
                 </div>
             @else
                 @foreach ($fichiers as $fichier)
-                    <a href="#" class="py-2 w-full text-center hover:bg-black hover:text-white hover:rounded-full">
+                    <a href="{{ asset('storage/' . $fichier->chemin) }}" download class="py-2 w-full text-center hover:bg-black hover:text-white hover:rounded-full">
                         {{ $fichier->nom }} ({{ $fichier->categorie }})
                     </a>
                 @endforeach
