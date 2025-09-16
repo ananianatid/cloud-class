@@ -7,6 +7,8 @@ use App\Filament\Resources\SemestreResource\RelationManagers;
 use App\Models\Semestre;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -26,8 +28,15 @@ class SemestreResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('numero')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->live()
+                    ->afterStateUpdated(function ($state, Set $set) {
+                        $num = preg_replace('/[^0-9]/', '', (string) $state);
+                        $set('slug', $num !== '' ? 'semestre-' . $num : '');
+                    }),
                 Forms\Components\TextInput::make('slug')
+                    ->disabled()
+                    ->dehydrated(true)
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('promotion_id')
