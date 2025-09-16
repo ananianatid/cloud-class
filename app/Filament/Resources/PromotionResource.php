@@ -5,8 +5,12 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PromotionResource\Pages;
 use App\Filament\Resources\PromotionResource\RelationManagers;
 use App\Models\Promotion;
+use App\Models\Diplome;
+use App\Models\Filiere;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -25,21 +29,88 @@ class PromotionResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('nom')
+                    ->disabled()
+                    ->dehydrated(true)
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('diplome_id')
                     ->relationship('diplome', 'nom')
+                    ->live()
+                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                        $set('nom', self::makePromotionName(
+                            $get('diplome_id'),
+                            $get('filiere_id'),
+                            $get('annee_debut'),
+                            $get('annee_fin'),
+                        ));
+                    })
                     ->required(),
                 Forms\Components\Select::make('filiere_id')
                     ->relationship('filiere', 'nom')
+                    ->live()
+                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                        $set('nom', self::makePromotionName(
+                            $get('diplome_id'),
+                            $get('filiere_id'),
+                            $get('annee_debut'),
+                            $get('annee_fin'),
+                        ));
+                    })
                     ->required(),
                 Forms\Components\TextInput::make('annee_debut')
+                    ->numeric()
+                    ->live()
+                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                        $set('nom', self::makePromotionName(
+                            $get('diplome_id'),
+                            $get('filiere_id'),
+                            $get('annee_debut'),
+                            $get('annee_fin'),
+                        ));
+                    })
                     ->required(),
                 Forms\Components\TextInput::make('annee_fin')
+                    ->numeric()
+                    ->live()
+                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                        $set('nom', self::makePromotionName(
+                            $get('diplome_id'),
+                            $get('filiere_id'),
+                            $get('annee_debut'),
+                            $get('annee_fin'),
+                        ));
+                    })
                     ->required(),
                 Forms\Components\TextInput::make('description')
                     ->maxLength(255),
             ]);
+    }
+
+    private static function makePromotionName(?int $diplomeId, ?int $filiereId, ?string $anneeDebut, ?string $anneeFin): string
+    {
+        if (!$diplomeId || !$filiereId || !$anneeDebut || !$anneeFin) {
+            return '';
+        }
+
+        $diplome = Diplome::find($diplomeId);
+        $filiere = Filiere::find($filiereId);
+
+        $diplomeNom = $diplome?->nom ?? '';
+        $filiereCode = $filiere?->code ?? '';
+
+        $yy = function ($year) {
+            $digits = preg_replace('/[^0-9]/', '', (string) $year);
+            return substr($digits, -2);
+        };
+
+        $start = $yy($anneeDebut);
+        $end = $yy($anneeFin);
+
+        if ($diplomeNom === '' || $filiereCode === '' || $start === '' || $end === '') {
+            return '';
+        }
+
+        return sprintf('%s-%s-%s-%s', $diplomeNom, $filiereCode, $start, $end);
     }
 
     public static function table(Table $table): Table
