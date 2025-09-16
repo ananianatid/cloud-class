@@ -18,6 +18,7 @@ class FichierResource extends Resource
     protected static ?string $model = Fichier::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Contenu';
 
     public static function form(Form $form): Form
     {

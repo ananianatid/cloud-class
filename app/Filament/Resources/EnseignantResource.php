@@ -18,7 +18,7 @@ class EnseignantResource extends Resource
     protected static ?string $model = Enseignant::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationGroup = 'Humain';
+    protected static ?string $navigationGroup = 'Ressources humaines';
 
     public static function form(Form $form): Form
     {

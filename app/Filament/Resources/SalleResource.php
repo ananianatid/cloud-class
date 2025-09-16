@@ -16,9 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class SalleResource extends Resource
 {
     protected static ?string $model = Salle::class;
-    
+
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
-    protected static ?string $navigationGroup = 'autonome';
+    protected static ?string $navigationGroup = 'Infrastructure';
 
     public static function form(Form $form): Form
     {
