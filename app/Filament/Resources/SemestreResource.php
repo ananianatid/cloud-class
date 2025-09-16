@@ -30,7 +30,7 @@ class SemestreResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('promotion_id')
-                    ->relationship('promotion', 'id')
+                    ->relationship('promotion', 'nom')
                     ->required(),
             ]);
     }
@@ -44,8 +44,7 @@ class SemestreResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('promotion.id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('promotion.nom')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()

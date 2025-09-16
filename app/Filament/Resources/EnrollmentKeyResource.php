@@ -27,7 +27,7 @@ class EnrollmentKeyResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('promotion_id')
-                    ->relationship('promotion', 'id'),
+                    ->relationship('promotion', 'nom'),
                 Forms\Components\TextInput::make('used_by')
                     ->numeric(),
                 Forms\Components\DateTimePicker::make('used_at'),
@@ -43,11 +43,10 @@ class EnrollmentKeyResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('key')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('promotion.id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('promotion.nom')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('used_by')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Utilisé par')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('used_at')
                     ->dateTime()

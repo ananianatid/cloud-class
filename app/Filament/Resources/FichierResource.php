@@ -23,9 +23,9 @@ class FichierResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('matiere_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('matiere_id')
+                    ->relationship('matiere', 'id')
+                    ->required(),
                 Forms\Components\TextInput::make('chemin')
                     ->required()
                     ->maxLength(255),
@@ -36,9 +36,9 @@ class FichierResource extends Resource
                     ->required(),
                 Forms\Components\Toggle::make('visible')
                     ->required(),
-                Forms\Components\TextInput::make('ajoute_par')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('ajoute_par')
+                    ->relationship('auteur', 'name')
+                    ->required(),
             ]);
     }
 
@@ -46,8 +46,8 @@ class FichierResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('matiere_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('matiere.id')
+                    ->label('Matière')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('chemin')
                     ->searchable(),
@@ -56,8 +56,8 @@ class FichierResource extends Resource
                 Tables\Columns\TextColumn::make('categorie'),
                 Tables\Columns\IconColumn::make('visible')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('ajoute_par')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('auteur.name')
+                    ->label('Ajouté par')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

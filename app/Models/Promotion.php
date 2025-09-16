@@ -13,6 +13,7 @@ class Promotion extends Model
 
     protected $fillable = [
         'nom',
+        'diplome_id',
         'filiere_id',
         'annee_debut',
         'annee_fin',
@@ -25,6 +26,14 @@ class Promotion extends Model
     public function filiere(): BelongsTo
     {
         return $this->belongsTo(Filiere::class);
+    }
+
+    /**
+     * Get the diplome that owns the promotion.
+     */
+    public function diplome(): BelongsTo
+    {
+        return $this->belongsTo(Diplome::class);
     }
 
     /**

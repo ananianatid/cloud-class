@@ -26,11 +26,11 @@ class PromotionResource extends Resource
                 Forms\Components\TextInput::make('nom')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('diplome_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('diplome_id')
+                    ->relationship('diplome', 'nom')
+                    ->required(),
                 Forms\Components\Select::make('filiere_id')
-                    ->relationship('filiere', 'id')
+                    ->relationship('filiere', 'nom')
                     ->required(),
                 Forms\Components\TextInput::make('annee_debut')
                     ->required(),
@@ -47,11 +47,9 @@ class PromotionResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nom')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('diplome_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('diplome.nom')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('filiere.id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('filiere.nom')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('annee_debut'),
                 Tables\Columns\TextColumn::make('annee_fin'),

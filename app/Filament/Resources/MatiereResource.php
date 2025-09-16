@@ -24,13 +24,13 @@ class MatiereResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('unite_id')
-                    ->relationship('unite', 'id')
+                    ->relationship('unite', 'nom')
                     ->required(),
                 Forms\Components\Select::make('semestre_id')
-                    ->relationship('semestre', 'id')
+                    ->relationship('semestre', 'slug')
                     ->required(),
                 Forms\Components\Select::make('enseignant_id')
-                    ->relationship('enseignant', 'id')
+                    ->relationship('enseignant', 'user.name')
                     ->required(),
             ]);
     }
@@ -39,14 +39,12 @@ class MatiereResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('unite.id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('unite.nom')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('semestre.id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('semestre.slug')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('enseignant.id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('enseignant.user.name')
+                    ->label('Enseignant')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
