@@ -29,9 +29,43 @@ class CoursResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('promotion_filter')
+                    ->label('Promotion (Filtre)')
+                    ->options(\App\Models\Promotion::pluck('nom', 'id'))
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->afterStateUpdated(fn (callable $set) => $set('semestre_filter', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('emploi_du_temps_id', null))
+                    ->dehydrated(false),
+
+                Forms\Components\Select::make('semestre_filter')
+                    ->label('Semestre (Filtre)')
+                    ->options(function (callable $get) {
+                        $promotionId = $get('promotion_filter');
+                        if (!$promotionId) {
+                            return [];
+                        }
+                        return \App\Models\Semestre::where('promotion_id', $promotionId)
+                            ->pluck('id', 'id')
+                            ->mapWithKeys(fn ($id) => ["$id" => "Semestre $id"]);
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->afterStateUpdated(fn (callable $set) => $set('emploi_du_temps_id', null))
+                    ->dehydrated(false),
+
                 Forms\Components\Select::make('emploi_du_temps_id')
                     ->label('Emploi du Temps')
-                    ->relationship('emploiDuTemps', 'nom')
+                    ->relationship(
+                        name: 'emploiDuTemps',
+                        titleAttribute: 'nom',
+                        modifyQueryUsing: fn ($query, $get) => $query->when(
+                            $get('semestre_filter'),
+                            fn ($query, $semestreId) => $query->where('semestre_id', $semestreId)
+                        )
+                    )
                     ->required()
                     ->searchable()
                     ->preload(),
