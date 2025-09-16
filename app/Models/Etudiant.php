@@ -15,7 +15,7 @@ class Etudiant extends Model
         'promotion_id',
         'matricule',
         'naissance',
-        'graduatin',
+        'graduation',
         'parent',
         'telephone_parent',
         'statut',

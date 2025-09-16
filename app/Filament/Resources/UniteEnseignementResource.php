@@ -17,7 +17,8 @@ class UniteEnseignementResource extends Resource
 {
     protected static ?string $model = UniteEnseignement::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-bookmark-square';
+    protected static ?string $navigationGroup = 'autonome';
 
     public static function form(Form $form): Form
     {

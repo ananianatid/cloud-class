@@ -17,7 +17,8 @@ class FiliereResource extends Resource
 {
     protected static ?string $model = Filiere::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
+    protected static ?string $navigationGroup = 'autonome';
 
     public static function form(Form $form): Form
     {

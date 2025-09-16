@@ -16,8 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class DiplomeResource extends Resource
 {
     protected static ?string $model = Diplome::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    
+    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+    protected static ?string $navigationGroup = 'autonome';
 
     public static function form(Form $form): Form
     {

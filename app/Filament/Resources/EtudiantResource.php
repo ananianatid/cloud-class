@@ -17,7 +17,8 @@ class EtudiantResource extends Resource
 {
     protected static ?string $model = Etudiant::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationGroup = 'Humain';
 
     public static function form(Form $form): Form
     {
@@ -33,7 +34,7 @@ class EtudiantResource extends Resource
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('naissance')
                     ->required(),
-                Forms\Components\DatePicker::make('graduatin'),
+                Forms\Components\DatePicker::make('graduation'),
                 Forms\Components\TextInput::make('parent')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('telephone_parent')
@@ -59,7 +60,7 @@ class EtudiantResource extends Resource
                 Tables\Columns\TextColumn::make('naissance')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('graduatin')
+                Tables\Columns\TextColumn::make('graduation')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('parent')
