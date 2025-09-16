@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Matiere extends Model
 {
+    protected $fillable = [
+        'unite_id',
+        'semestre_id',
+        'enseignant_id',
+    ];
+
     /**
      * Get the semestre that owns the matiere.
      */

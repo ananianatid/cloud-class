@@ -7,11 +7,14 @@ use App\Filament\Resources\MatiereResource\RelationManagers;
 use App\Models\Matiere;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\Promotion;
 
 class MatiereResource extends Resource
 {
@@ -26,9 +29,23 @@ class MatiereResource extends Resource
             ->schema([
                 Forms\Components\Select::make('unite_id')
                     ->relationship('unite', 'nom')
+                    ->searchable()
                     ->required(),
+                Forms\Components\Select::make('promotion_filter')
+                    ->label('Promotion')
+                    ->options(fn () => Promotion::query()->orderBy('nom')->pluck('nom', 'id'))
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->dehydrated(false)
+                    ->afterStateUpdated(fn (Set $set) => $set('semestre_id', null)),
                 Forms\Components\Select::make('semestre_id')
-                    ->relationship('semestre', 'slug')
+                    ->relationship('semestre', 'slug', modifyQueryUsing: fn (Builder $query, Get $get) => (
+                        $get('promotion_filter')
+                            ? $query->where('promotion_id', $get('promotion_filter'))
+                            : $query
+                    ))
+                    ->preload()
                     ->required(),
                 Forms\Components\Select::make('enseignant_id')
                     ->relationship('enseignant')
