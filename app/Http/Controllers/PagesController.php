@@ -47,14 +47,6 @@ class PagesController extends Controller
                 ->with('error', "Aucun semestre trouvé pour votre promotion.");
         }
 
-        // // Get all courses for this semester through matieres
-        // $cours = Cours::whereHas('matiere', function ($query) use ($closestSemestre) {
-        //     $query->where('semestre_id', $closestSemestre->id);
-        // })
-        // ->with(['matiere', 'salle', 'emploiDuTemps'])
-        // ->orderBy('jour')
-        // ->orderBy('debut')
-        // ->get();
         $cours = $closestSemestre->matieres;
 
         return view('dashboard', compact('cours', 'closestSemestre'));
