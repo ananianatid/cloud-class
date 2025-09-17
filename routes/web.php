@@ -18,6 +18,6 @@ Route::middleware([
     Route::get('/semestre-{semestre}/{matiere}',[PagesController::class,'displayFichiers'])->name('fichiers');
 
     Route::get('/test',[TablesController::class,'createSemestre'])->name('test');
-
+    Route::get('/emplois-du-temps',[PagesController::class,'displayEmploisDuTemps'])->name('emplois-du-temps');
 
 });

@@ -54,4 +54,8 @@ class PagesController extends Controller
             'fichiers' => $fichiers,
         ]);
     }
+
+    public function displayEmploisDuTemps() {
+        return view('pages.timeTable');
+    }
 }
