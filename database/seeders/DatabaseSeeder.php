@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MatiereSeeder::class);
         $this->call(FichierSeeder::class);
         $this->call(EmploiDuTempsSeeder::class);
+        $this->call(CoursSeeder::class);
 
         // Default student user (after promotions exist)
         $john = User::firstOrCreate(

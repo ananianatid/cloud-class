@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Matiere;
+use App\Models\UniteEnseignement;
+use App\Models\Semestre;
+use App\Models\Enseignant;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,12 +16,25 @@ class MatiereSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 6; $i++) {
-            Matiere::create([
-                'unite_id'=>$i,
-                'semestre_id'=>1,
-                'enseignant_id'=>1
-            ]);
+        // Target semestre: numero 5 (for promotion 1)
+        $semestre5 = Semestre::where('numero', 5)->where('promotion_id', 1)->first();
+        if (!$semestre5) {
+            return;
+        }
+
+        $enseignantId = (int) (Enseignant::min('id') ?? 1);
+
+        $unites = UniteEnseignement::orderBy('id')->limit(6)->pluck('id');
+        foreach ($unites as $uniteId) {
+            Matiere::updateOrCreate(
+                [
+                    'unite_id' => $uniteId,
+                    'semestre_id' => $semestre5->id,
+                ],
+                [
+                    'enseignant_id' => $enseignantId,
+                ]
+            );
         }
     }
 }
