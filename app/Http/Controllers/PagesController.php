@@ -52,6 +52,39 @@ class PagesController extends Controller
         return view('dashboard', compact('cours', 'closestSemestre'));
     }
 
+    public function displayEmploisDuTempsActif() {
+        $user = Auth::user();
+
+        if ($user->role !== 'etudiant') {
+            abort(403, 'Accès non autorisé. Seuls les étudiants peuvent accéder à cette page.');
+        }
+
+        $etudiant = $user->etudiant;
+        if (!$etudiant) {
+            $emploisDuTemps = collect();
+            return view('pages.timeTable', compact('emploisDuTemps'))
+                ->with('error', "Votre compte n'est pas associé à un profil étudiant.");
+        }
+
+        if (is_null($etudiant->promotion_id)) {
+            $emploisDuTemps = collect();
+            return view('pages.timeTable', compact('emploisDuTemps'))
+                ->with('error', "Vous n'appartenez à aucune promotion. Veuillez contacter l'administration.");
+        }
+
+        $promotionId = $etudiant->promotion_id;
+
+        $emploisDuTemps = EmploiDuTemps::with(['semestre.promotion'])
+            ->whereHas('semestre', function ($query) use ($promotionId) {
+                $query->where('promotion_id', $promotionId);
+            })
+            ->orderByDesc('actif')
+            ->orderBy('categorie')
+            ->get();
+
+        return view('pages.temps.emploi-du-temps-actif', compact('emploisDuTemps'));
+    }
+
     public function displaySemestres() {
         $user = Auth::user();
 

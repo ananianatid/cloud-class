@@ -14,6 +14,7 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard',[PagesController::class,'displayDashboard'])->name('dashboard');
+    Route::get('/emploi-du-temps-actif',[PagesController::class,'displayEmploisDuTempsActif'])->name('emploi-du-temps-actif');
     // Route::get('/semestre-{semestre}/matieres',[PagesController::class,'displayMatieres'])->name('matieres');
     // Route::get('/semestre-{semestre}/{matiere}',[PagesController::class,'displayFichiers'])->name('fichiers');
     Route::get('/emplois-du-temps',[PagesController::class,'displayEmploisDuTemps'])->name('emplois-du-temps');
