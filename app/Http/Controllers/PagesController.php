@@ -35,9 +35,10 @@ class PagesController extends Controller
         $promotionId = $etudiant->promotion_id;
         $today = Carbon::today();
 
-        // Find the semester closest to today's date
+        // Find the semester whose start date is in the past and closest to today
         $closestSemestre = Semestre::where('promotion_id', $promotionId)
-            ->orderByRaw('ABS(DATEDIFF(date_debut, ?))', [$today])
+            ->whereDate('date_debut', '<=', $today)
+            ->orderBy('date_debut', 'desc')
             ->first();
 
         if (!$closestSemestre) {
