@@ -42,6 +42,10 @@ class SemestreResource extends Resource
                 Forms\Components\Select::make('promotion_id')
                     ->relationship('promotion', 'nom')
                     ->required(),
+                Forms\Components\DatePicker::make('date_debut')
+                    ->required(),
+                Forms\Components\DatePicker::make('date_fin')
+                    ->required(),
             ]);
     }
 
@@ -55,6 +59,12 @@ class SemestreResource extends Resource
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('promotion.nom')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('date_debut')
+                    ->date()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('date_fin')
+                    ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()

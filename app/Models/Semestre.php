@@ -8,7 +8,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Semestre extends Model
 {
-    protected $guarded;
+    protected $fillable = [
+        'numero',
+        'slug',
+        'promotion_id',
+        'date_debut',
+        'date_fin',
+    ];
+
+    protected $casts = [
+        'date_debut' => 'date',
+        'date_fin' => 'date',
+    ];
 
     /**
      * Get the matieres for the semestre.
