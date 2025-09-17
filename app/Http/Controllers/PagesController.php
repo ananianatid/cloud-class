@@ -7,9 +7,58 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Models\Semestre;
 use App\Models\EmploiDuTemps;
+use App\Models\Cours;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 class PagesController extends Controller
 {
+    public function displayDashboard() {
+        $user = Auth::user();
+
+        if ($user->role !== 'etudiant') {
+            abort(403, 'Accès non autorisé. Seuls les étudiants peuvent accéder à cette page.');
+        }
+
+        $etudiant = $user->etudiant;
+        if (!$etudiant) {
+            $cours = collect();
+            return view('dashboard', compact('cours'))
+                ->with('error', "Votre compte n'est pas associé à un profil étudiant.");
+        }
+
+        if (is_null($etudiant->promotion_id)) {
+            $cours = collect();
+            return view('dashboard', compact('cours'))
+                ->with('error', "Vous n'appartenez à aucune promotion. Veuillez contacter l'administration.");
+        }
+
+        $promotionId = $etudiant->promotion_id;
+        $today = Carbon::today();
+
+        // Find the semester closest to today's date
+        $closestSemestre = Semestre::where('promotion_id', $promotionId)
+            ->orderByRaw('ABS(DATEDIFF(date_debut, ?))', [$today])
+            ->first();
+
+        if (!$closestSemestre) {
+            $cours = collect();
+            return view('dashboard', compact('cours'))
+                ->with('error', "Aucun semestre trouvé pour votre promotion.");
+        }
+
+        // // Get all courses for this semester through matieres
+        // $cours = Cours::whereHas('matiere', function ($query) use ($closestSemestre) {
+        //     $query->where('semestre_id', $closestSemestre->id);
+        // })
+        // ->with(['matiere', 'salle', 'emploiDuTemps'])
+        // ->orderBy('jour')
+        // ->orderBy('debut')
+        // ->get();
+        $cours = $closestSemestre->matieres;
+
+        return view('dashboard', compact('cours', 'closestSemestre'));
+    }
+
     public function displaySemestres() {
         $user = Auth::user();
 
