@@ -74,15 +74,31 @@ class PagesController extends Controller
 
         $promotionId = $etudiant->promotion_id;
 
-        $emploisDuTemps = EmploiDuTemps::with(['semestre.promotion'])
+        // Find the active timetable for the student's promotion
+        $edtActif = EmploiDuTemps::with(['semestre.promotion'])
+            ->where('actif', true)
             ->whereHas('semestre', function ($query) use ($promotionId) {
                 $query->where('promotion_id', $promotionId);
             })
-            ->orderByDesc('actif')
-            ->orderBy('categorie')
+            ->first();
+
+        if (!$edtActif) {
+            $cours = collect();
+            return view('pages.temps.emploi-du-temps-actif', compact('cours'))
+                ->with('error', "Aucun emploi du temps actif n'a été trouvé pour votre promotion.");
+        }
+
+        // Load courses for the active timetable
+        $joursOrder = ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"];
+        $joursSql = "'" . implode("','", $joursOrder) . "'";
+
+        $cours = Cours::with(['matiere.unite', 'matiere.enseignant.user', 'salle'])
+            ->where('emploi_du_temps_id', $edtActif->id)
+            ->orderByRaw("FIELD(jour, $joursSql)")
+            ->orderBy('debut')
             ->get();
 
-        return view('pages.temps.emploi-du-temps-actif', compact('emploisDuTemps'));
+        return view('pages.temps.emploi-du-temps-actif', compact('cours', 'edtActif'));
     }
 
     public function displaySemestres() {
