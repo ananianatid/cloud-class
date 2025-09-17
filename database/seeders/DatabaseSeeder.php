@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
         $this->call(SemestreSeeder::class);
         $this->call(MatiereSeeder::class);
         $this->call(FichierSeeder::class);
+        $this->call(EmploiDuTempsSeeder::class);
 
 
     }
