@@ -101,33 +101,33 @@ class PagesController extends Controller
     //     return view('pages.temps.emploi-du-temps-actif', compact('cours', 'edtActif'));
     // }
 
-    // public function displaySemestres() {
-    //     $user = Auth::user();
+    public function displaySemestres() {
+        $user = Auth::user();
 
-    //     // Vérifier si l'utilisateur est un étudiant
-    //     if ($user->role !== 'etudiant') {
-    //         abort(403, 'Accès non autorisé. Seuls les étudiants peuvent accéder à cette page.');
-    //     }
+        // Vérifier si l'utilisateur est un étudiant
+        if ($user->role !== 'etudiant') {
+            abort(403, 'Accès non autorisé. Seuls les étudiants peuvent accéder à cette page.');
+        }
 
-    //     // Récupérer l'étudiant lié et gérer les cas d'absence de promotion
-    //     $etudiant = $user->etudiant;
-    //     if (!$etudiant) {
-    //         $semestres = collect();
-    //         return view('dashboard', compact('semestres'))
-    //             ->with('error', "Votre compte n'est pas associé à un profil étudiant.");
-    //     }
+        // Récupérer l'étudiant lié et gérer les cas d'absence de promotion
+        $etudiant = $user->etudiant;
+        if (!$etudiant) {
+            $semestres = collect();
+            return view('dashboard', compact('semestres'))
+                ->with('error', "Votre compte n'est pas associé à un profil étudiant.");
+        }
 
-    //     if (is_null($etudiant->promotion_id)) {
-    //         $semestres = collect();
-    //         return view('dashboard', compact('semestres'))
-    //             ->with('error', "Vous n'appartenez à aucune promotion. Veuillez contacter l'administration.");
-    //     }
+        if (is_null($etudiant->promotion_id)) {
+            $semestres = collect();
+            return view('dashboard', compact('semestres'))
+                ->with('error', "Vous n'appartenez à aucune promotion. Veuillez contacter l'administration.");
+        }
 
-    //     // Récupérer les semestres de cette promotion
-    //     $semestres = Semestre::where('promotion_id', $etudiant->promotion_id)->get();
+        // Récupérer les semestres de cette promotion
+        $semestres = Semestre::where('promotion_id', $etudiant->promotion_id)->get();
 
-    //     return view('dashboard', compact('semestres'));
-    // }
+        return view('pages.semestres', compact('semestres'));
+    }
 
     // public function displayMatieres(Semestre $semestre) {
     //     $matieres = $semestre->matieres;
@@ -147,38 +147,38 @@ class PagesController extends Controller
     //     ]);
     // }
 
-    // public function displayEmploisDuTemps() {
-    //     $user = Auth::user();
+    public function displayEmploisDuTemps() {
+        $user = Auth::user();
 
-    //     if ($user->role !== 'etudiant') {
-    //         abort(403, 'Accès non autorisé. Seuls les étudiants peuvent accéder à cette page.');
-    //     }
+        if ($user->role !== 'etudiant') {
+            abort(403, 'Accès non autorisé. Seuls les étudiants peuvent accéder à cette page.');
+        }
 
-    //     $etudiant = $user->etudiant;
-    //     if (!$etudiant) {
-    //         $emploisDuTemps = collect();
-    //         return view('pages.timeTable', compact('emploisDuTemps'))
-    //             ->with('error', "Votre compte n'est pas associé à un profil étudiant.");
-    //     }
+        $etudiant = $user->etudiant;
+        if (!$etudiant) {
+            $emploisDuTemps = collect();
+            return view('pages.emplois-du-temps', compact('emploisDuTemps'))
+                ->with('error', "Votre compte n'est pas associé à un profil étudiant.");
+        }
 
-    //     if (is_null($etudiant->promotion_id)) {
-    //         $emploisDuTemps = collect();
-    //         return view('pages.timeTable', compact('emploisDuTemps'))
-    //             ->with('error', "Vous n'appartenez à aucune promotion. Veuillez contacter l'administration.");
-    //     }
+        if (is_null($etudiant->promotion_id)) {
+            $emploisDuTemps = collect();
+            return view('pages.emplois-du-temps', compact('emploisDuTemps'))
+                ->with('error', "Vous n'appartenez à aucune promotion. Veuillez contacter l'administration.");
+        }
 
-    //     $promotionId = $etudiant->promotion_id;
+        $promotionId = $etudiant->promotion_id;
 
-    //     $emploisDuTemps = EmploiDuTemps::with(['semestre.promotion'])
-    //         ->whereHas('semestre', function ($query) use ($promotionId) {
-    //             $query->where('promotion_id', $promotionId);
-    //         })
-    //         ->orderByDesc('actif')
-    //         ->orderBy('categorie')
-    //         ->get();
+        $emploisDuTemps = EmploiDuTemps::with(['semestre.promotion'])
+            ->whereHas('semestre', function ($query) use ($promotionId) {
+                $query->where('promotion_id', $promotionId);
+            })
+            ->orderByDesc('actif')
+            ->orderBy('categorie')
+            ->get();
 
-    //     return view('pages.timeTable', compact('emploisDuTemps'));
-    // }
+        return view('pages.emplois-du-temps', compact('emploisDuTemps'));
+    }
     public function diplaySemestre(Semestre $semestre){
         $matieres = $semestre->matieres()
             ->with(['enseignant.user','unite'])
@@ -190,6 +190,16 @@ class PagesController extends Controller
         ]);
     }
     public function displayMatiere(Semestre $semestre, Matiere $matiere){
-        
+        if ($matiere->semestre_id !== $semestre->id) {
+            abort(404);
+        }
+
+        $fichiers = $matiere->fichiers ?? collect();
+
+        return view('pages.matiere', [
+            'semestre' => $semestre,
+            'matiere' => $matiere,
+            'fichiers' => $fichiers,
+        ]);
     }
 }

@@ -27,14 +27,14 @@
             </div>
         @else
             @foreach ($cours as $matiere)
-                <div class="w-full p-3 border rounded hover:bg-gray-50">
+                <a href="{{route("matiere",['semestre'=>$closestSemestre,'matiere'=>$matiere])}}" class="w-full p-3 border rounded hover:bg-gray-50">
                     <div class="font-semibold">
                         {{ $matiere->unite->nom ?? 'Unité inconnue' }}
                     </div>
                     <div class="text-sm text-gray-600">
                         {{ $matiere->enseignant->user->name ?? 'Enseignant inconnu' }}
                     </div>
-                </div>
+                </a>
             @endforeach
         @endif
     </div>

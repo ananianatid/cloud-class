@@ -16,20 +16,14 @@ Route::middleware([
     Route::get('/dashboard',[PagesController::class,'displayDashboard'])->name('dashboard');
 
 
-    Route::get('/semestres', function () {
-        return view('pages.semestres');
-    })->name('semestres');
+    Route::get('/semestres', [PagesController::class,'displaySemestres'])->name('semestres');
 
     Route::get('/semestre-{semestre}', [PagesController::class,'diplaySemestre'])->name('semestre');
 
-    Route::get('/semestre-1/matiere-1', function () {
-        return view('pages.matiere');
-    })->name('matiere');
+    Route::get('/semestre-{semestre}/matiere-{matiere}', [PagesController::class,'displayMatiere'])->name('matiere');
 
 
-    Route::get('/emplois-du-temps', function () {
-        return view('pages.emplois-du-temps');
-    })->name('emplois-du-temps');
+    Route::get('/emplois-du-temps', [PagesController::class,'displayEmploisDuTemps'])->name('emplois-du-temps');
 
     Route::get('/emploi-du-temps', function () {
         return view('pages.emploi-du-temps');

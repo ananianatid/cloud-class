@@ -23,7 +23,7 @@
                         {{ $matiere->enseignant->user->name ?? 'Enseignant inconnu' }}
                     </div>
                 </div> --}}
-                <x-bubulle-rfull route="matiere" text="{{ $matiere->unite->nom ?? 'Unité inconnue' }}" :show-check="false" />
+                <x-bubulle-rfull route="matiere" :route-params="['semestre' => $semestre, 'matiere' => $matiere]" :text="$matiere->unite->nom ?? 'Unité inconnue'" :show-check="false" />
             @endforeach
         @else
             <div class="text-center text-gray-500">Aucune matière disponible pour ce semestre.</div>
