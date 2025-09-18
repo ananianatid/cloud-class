@@ -19,7 +19,7 @@ class CoursResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
-    protected static ?string $navigationLabel = 'Cours';
+    protected static ?string $navigationGroup = 'Temps';
 
     protected static ?string $modelLabel = 'Cours';
 
