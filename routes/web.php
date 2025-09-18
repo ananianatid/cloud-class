@@ -14,10 +14,24 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard',[PagesController::class,'displayDashboard'])->name('dashboard');
-    Route::get('/emploi-du-temps-actif',[PagesController::class,'displayEmploisDuTempsActif'])->name('emploi-du-temps-actif');
-    // Route::get('/semestre-{semestre}/matieres',[PagesController::class,'displayMatieres'])->name('matieres');
-    // Route::get('/semestre-{semestre}/{matiere}',[PagesController::class,'displayFichiers'])->name('fichiers');
-    Route::get('/emplois-du-temps',[PagesController::class,'displayEmploisDuTemps'])->name('emplois-du-temps');
 
-    Route::get('/test',[TablesController::class,'createSemestre'])->name('test');
+
+    Route::get('/semestres', function () {
+        return view('pages.semestres');
+    })->name('semestres');
+
+    Route::get('/semestre-{semestre}', [PagesController::class,'diplaySemestre'])->name('semestre');
+
+    Route::get('/semestre-1/matiere-1', function () {
+        return view('pages.matiere');
+    })->name('matiere');
+
+
+    Route::get('/emplois-du-temps', function () {
+        return view('pages.emplois-du-temps');
+    })->name('emplois-du-temps');
+
+    Route::get('/emploi-du-temps', function () {
+        return view('pages.emploi-du-temps');
+    })->name('emploi-du-temps');
 });
