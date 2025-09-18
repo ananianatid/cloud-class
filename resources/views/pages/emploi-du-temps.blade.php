@@ -12,11 +12,17 @@
 
         <div class="mb-4 flex items-center justify-between">
             <div class="text-sm text-gray-600">
-                {{ \Carbon\Carbon::parse($edt->debut)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($edt->fin)->format('d/m/Y') }}
+                @isset($edt)
+                    {{ \Carbon\Carbon::parse($edt->debut)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($edt->fin)->format('d/m/Y') }}
+                @else
+                    Aucun emploi du temps actif
+                @endisset
             </div>
-            @if($edt->actif)
-                <span class="inline-block text-[10px] text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full">Actif</span>
-            @endif
+            @isset($edt)
+                @if($edt->actif)
+                    <span class="inline-block text-[10px] text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full">Actif</span>
+                @endif
+            @endisset
         </div>
 
         @php

@@ -4,6 +4,11 @@
             {{ __('Semestre') }}
         </h2>
     </x-slot>
+    <nav class="mb-4 text-sm text-gray-600">
+        <a href="{{ route('semestres') }}" class="hover:underline">Semestres</a>
+        <span class="mx-1">/</span>
+        <span>Semestre {{ $semestre->numero ?? '' }}</span>
+    </nav>
     <div class="mb-6 text-center text-gray-700">
         <div class="text-lg font-medium">Semestre {{ $semestre->numero ?? '' }}</div>
         @if(isset($semestre->date_debut, $semestre->date_fin))

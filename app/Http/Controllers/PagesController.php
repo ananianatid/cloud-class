@@ -35,7 +35,6 @@ class PagesController extends Controller
         $promotionId = $etudiant->promotion_id;
         $today = Carbon::today();
 
-        // Find the semester whose start date is in the past and closest to today
         $closestSemestre = Semestre::where('promotion_id', $promotionId)
             ->whereDate('date_debut', '<=', $today)
             ->orderBy('date_debut', 'desc')
@@ -52,54 +51,6 @@ class PagesController extends Controller
         return view('dashboard', compact('cours', 'closestSemestre'));
     }
 
-    // public function displayEmploisDuTempsActif() {
-    //     $user = Auth::user();
-
-    //     if ($user->role !== 'etudiant') {
-    //         abort(403, 'Accès non autorisé. Seuls les étudiants peuvent accéder à cette page.');
-    //     }
-
-    //     $etudiant = $user->etudiant;
-    //     if (!$etudiant) {
-    //         $emploisDuTemps = collect();
-    //         return view('pages.timeTable', compact('emploisDuTemps'))
-    //             ->with('error', "Votre compte n'est pas associé à un profil étudiant.");
-    //     }
-
-    //     if (is_null($etudiant->promotion_id)) {
-    //         $emploisDuTemps = collect();
-    //         return view('pages.timeTable', compact('emploisDuTemps'))
-    //             ->with('error', "Vous n'appartenez à aucune promotion. Veuillez contacter l'administration.");
-    //     }
-
-    //     $promotionId = $etudiant->promotion_id;
-
-    //     // Find the active timetable for the student's promotion
-    //     $edtActif = EmploiDuTemps::with(['semestre.promotion'])
-    //         ->where('actif', true)
-    //         ->whereHas('semestre', function ($query) use ($promotionId) {
-    //             $query->where('promotion_id', $promotionId);
-    //         })
-    //         ->first();
-
-    //     if (!$edtActif) {
-    //         $cours = collect();
-    //         return view('pages.temps.emploi-du-temps-actif', compact('cours'))
-    //             ->with('error', "Aucun emploi du temps actif n'a été trouvé pour votre promotion.");
-    //     }
-
-    //     // Load courses for the active timetable
-    //     $joursOrder = ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"];
-    //     $joursSql = "'" . implode("','", $joursOrder) . "'";
-
-    //     $cours = Cours::with(['matiere.unite', 'matiere.enseignant.user', 'salle'])
-    //         ->where('emploi_du_temps_id', $edtActif->id)
-    //         ->orderByRaw("FIELD(jour, $joursSql)")
-    //         ->orderBy('debut')
-    //         ->get();
-
-    //     return view('pages.temps.emploi-du-temps-actif', compact('cours', 'edtActif'));
-    // }
 
     public function displaySemestres() {
         $user = Auth::user();
@@ -123,30 +74,10 @@ class PagesController extends Controller
                 ->with('error', "Vous n'appartenez à aucune promotion. Veuillez contacter l'administration.");
         }
 
-        // Récupérer les semestres de cette promotion
         $semestres = Semestre::where('promotion_id', $etudiant->promotion_id)->get();
 
         return view('pages.semestres', compact('semestres'));
     }
-
-    // public function displayMatieres(Semestre $semestre) {
-    //     $matieres = $semestre->matieres;
-    //     return view('pages.subjects',['semestre'=>$semestre,'matieres'=>$matieres]);
-
-    // }
-
-    // public function displayFichiers(Semestre $semestre, Matiere $matiere){
-    //     if ($matiere->semestre_id !== $semestre->id) {
-    //         abort(404);
-    //     }
-
-    //     $fichiers = $matiere->fichiers ?? collect();
-    //     return view('pages.files', [
-    //         'matiere' => $matiere,
-    //         'fichiers' => $fichiers,
-    //     ]);
-    // }
-
 
     public function diplaySemestre(Semestre $semestre){
         $matieres = $semestre->matieres()
@@ -158,6 +89,7 @@ class PagesController extends Controller
             'matieres' => $matieres,
         ]);
     }
+
     public function displayMatiere(Semestre $semestre, Matiere $matiere){
         if ($matiere->semestre_id !== $semestre->id) {
             abort(404);
@@ -208,6 +140,57 @@ class PagesController extends Controller
 
         return view('pages.emploi-du-temps', [
             'edt' => $emploiDuTemps,
+            'cours' => $cours,
+            'joursOrder' => $joursOrder,
+        ]);
+    }
+
+    public function displayEmploiDuTempsActif() {
+        $user = Auth::user();
+
+        if ($user->role !== 'etudiant') {
+            abort(403, 'Accès non autorisé. Seuls les étudiants peuvent accéder à cette page.');
+        }
+
+        $etudiant = $user->etudiant;
+        if (!$etudiant) {
+            $cours = collect();
+            return view('pages.emploi-du-temps', compact('cours'))
+                ->with('error', "Votre compte n'est pas associé à un profil étudiant.");
+        }
+
+        if (is_null($etudiant->promotion_id)) {
+            $cours = collect();
+            return view('pages.emploi-du-temps', compact('cours'))
+                ->with('error', "Vous n'appartenez à aucune promotion. Veuillez contacter l'administration.");
+        }
+
+        $promotionId = $etudiant->promotion_id;
+
+        $edtActif = EmploiDuTemps::with(['semestre.promotion'])
+            ->where('actif', true)
+            ->whereHas('semestre', function ($query) use ($promotionId) {
+                $query->where('promotion_id', $promotionId);
+            })
+            ->first();
+
+        if (!$edtActif) {
+            $cours = collect();
+            return view('pages.emploi-du-temps', compact('cours'))
+                ->with('error', "Aucun emploi du temps actif n'a été trouvé pour votre promotion.");
+        }
+
+        $joursOrder = ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"];
+        $joursSql = "'" . implode("','", $joursOrder) . "'";
+
+        $cours = Cours::with(['matiere.unite', 'matiere.enseignant.user', 'salle'])
+            ->where('emploi_du_temps_id', $edtActif->id)
+            ->orderByRaw("FIELD(jour, $joursSql)")
+            ->orderBy('debut')
+            ->get();
+
+        return view('pages.emploi-du-temps', [
+            'edt' => $edtActif,
             'cours' => $cours,
             'joursOrder' => $joursOrder,
         ]);

@@ -25,10 +25,10 @@ class CreateNewUser implements CreatesNewUsers
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-            'sexe' => ['required', Rule::in(['M','F'])],
+            'sexe' => ['nullable', Rule::in(['M','F'])],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => $this->passwordRules(),
-            'enrollment_key' => ['required', 'string'],
+            'enrollment_key' => ['nullable', 'string'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->after(function ($validator) use ($input) {
             $keyValue = $input['enrollment_key'] ?? null;
@@ -45,31 +45,34 @@ class CreateNewUser implements CreatesNewUsers
             $user = User::create([
                 'name' => $input['name'],
                 'email' => $input['email'],
-                'sexe' => $input['sexe'],
+                'sexe' => $input['sexe'] ?? 'M',
                 'role' => 'etudiant',
                 'password' => Hash::make($input['password']),
             ]);
 
-            $key = EnrollmentKey::where('key', $input['enrollment_key'])->lockForUpdate()->first();
+            $keyValue = $input['enrollment_key'] ?? null;
+            if ($keyValue) {
+                $key = EnrollmentKey::where('key', $keyValue)->lockForUpdate()->first();
 
-            // Re-check usability under lock
-            if (!$key || !$key->isUsable()) {
-                abort(422, __('Clé d\'enrôlement invalide ou expirée.'));
+                // Re-check usability under lock
+                if (!$key || !$key->isUsable()) {
+                    abort(422, __('Clé d\'enrôlement invalide ou expirée.'));
+                }
+
+                // Create Etudiant and assign promotion
+                Etudiant::query()->create([
+                    'user_id' => $user->id,
+                    'promotion_id' => $key->promotion_id,
+                    'naissance' => now(),
+                    'statut' => 'actif',
+                ]);
+
+                // Consume key
+                $key->forceFill([
+                    'used_by' => $user->id,
+                    'used_at' => now(),
+                ])->save();
             }
-
-            // Create Etudiant and assign promotion
-            Etudiant::query()->create([
-                'user_id' => $user->id,
-                'promotion_id' => $key->promotion_id,
-                'naissance' => now(),
-                'statut' => 'actif',
-            ]);
-
-            // Consume key
-            $key->forceFill([
-                'used_by' => $user->id,
-                'used_at' => now(),
-            ])->save();
 
             return $user;
         });

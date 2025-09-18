@@ -5,6 +5,14 @@
         </h2>
     </x-slot>
 
+    <nav class="mb-4 text-sm text-gray-600">
+        <a href="{{ route('semestres') }}" class="hover:underline">Semestres</a>
+        <span class="mx-1">/</span>
+        <a href="{{ route('semestre', ['semestre' => $semestre]) }}" class="hover:underline">Semestre {{ $semestre->numero ?? '' }}</a>
+        <span class="mx-1">/</span>
+        <span>{{ $matiere->unite->nom ?? 'Matière' }}</span>
+    </nav>
+
     <div
         x-data="{
             total: 4,

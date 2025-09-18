@@ -11,8 +11,13 @@
             </div>
         @endif
 
+    @isset($closestSemestre)
     <a href="{{ route('semestre', ['semestre'=>$closestSemestre]) }}"  class="w-96 border border-gray-300 rounded-2xl p-4 text-gray-700 flex flex-row items-center justify-center gap-4 mb-4 hover:bg-gray-50 transition-colors duration-200">
         Semestre {{$closestSemestre->numero}}
+    </a>
+    @endisset
+    <a href="{{ route('emploi-du-temps-actif') }}"  class="w-96 border border-blue-300 text-blue-700 rounded-2xl p-4 flex flex-row items-center justify-center gap-4 mb-4 hover:bg-blue-50 transition-colors duration-200">
+        Voir l'emploi du temps actif
     </a>
     <div class="w-96 border border-gray-300 rounded-2xl p-4 text-gray-700 flex flex-col items-center justify-center gap-4 mb-4">
         @if(isset($closestSemestre))
@@ -21,11 +26,11 @@
             </div>
         @endif
 
-        @if($cours->isEmpty())
+        @if(isset($cours) && $cours->isEmpty())
             <div class="py-2 w-full text-center text-gray-500">
                 Aucune matière disponible pour ce semestre.
             </div>
-        @else
+        @elseif(isset($cours))
             @foreach ($cours as $matiere)
                 <a href="{{route("matiere",['semestre'=>$closestSemestre,'matiere'=>$matiere])}}" class="w-full p-3 border rounded hover:bg-gray-50">
                     <div class="font-semibold">
