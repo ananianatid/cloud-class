@@ -20,20 +20,20 @@
     <body class="font-sans antialiased">
         <x-banner />
 
-        <div class="h-screen flex flex-col">
+        <div class="min-h-screen bg-white flex flex-col">
             @livewire('navigation-menu')
 
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-1 px-4 sm:px-6 lg:px-8">
+                <header class="bg-white border-b border-gray-100">
+                    <div class="max-w-7xl mx-auto py-2 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
             @endif
 
             <!-- Page Content -->
-            <main class="flex-1">
+            <main class="flex-1 w-full flex justify-center items-center flex-col">
                 {{ $slot }}
             </main>
         </div>
