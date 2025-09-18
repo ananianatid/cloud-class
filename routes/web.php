@@ -24,8 +24,5 @@ Route::middleware([
 
 
     Route::get('/emplois-du-temps', [PagesController::class,'displayEmploisDuTemps'])->name('emplois-du-temps');
-
-    Route::get('/emploi-du-temps', function () {
-        return view('pages.emploi-du-temps');
-    })->name('emploi-du-temps');
+    Route::get('/emplois-du-temps-{emploiDuTemps}', [PagesController::class,'displayEmploiDuTemps'])->name('emploi-du-temps');
 });

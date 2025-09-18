@@ -33,7 +33,7 @@
                         <div class="px-4 pb-4">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 @foreach($list as $edt)
-                                    <a class="border border-gray-200 rounded-lg p-3">
+                                    <a href="{{ route('emploi-du-temps', $edt) }}" class="border border-gray-200 rounded-lg p-3">
                                         <div class="font-medium text-gray-800">
                                             {{ ucfirst($edt->categorie) }}
                                         </div>

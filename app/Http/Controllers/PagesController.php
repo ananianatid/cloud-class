@@ -147,38 +147,7 @@ class PagesController extends Controller
     //     ]);
     // }
 
-    public function displayEmploisDuTemps() {
-        $user = Auth::user();
 
-        if ($user->role !== 'etudiant') {
-            abort(403, 'Accès non autorisé. Seuls les étudiants peuvent accéder à cette page.');
-        }
-
-        $etudiant = $user->etudiant;
-        if (!$etudiant) {
-            $emploisDuTemps = collect();
-            return view('pages.emplois-du-temps', compact('emploisDuTemps'))
-                ->with('error', "Votre compte n'est pas associé à un profil étudiant.");
-        }
-
-        if (is_null($etudiant->promotion_id)) {
-            $emploisDuTemps = collect();
-            return view('pages.emplois-du-temps', compact('emploisDuTemps'))
-                ->with('error', "Vous n'appartenez à aucune promotion. Veuillez contacter l'administration.");
-        }
-
-        $promotionId = $etudiant->promotion_id;
-
-        $emploisDuTemps = EmploiDuTemps::with(['semestre.promotion'])
-            ->whereHas('semestre', function ($query) use ($promotionId) {
-                $query->where('promotion_id', $promotionId);
-            })
-            ->orderByDesc('actif')
-            ->orderBy('categorie')
-            ->get();
-
-        return view('pages.emplois-du-temps', compact('emploisDuTemps'));
-    }
     public function diplaySemestre(Semestre $semestre){
         $matieres = $semestre->matieres()
             ->with(['enseignant.user','unite'])
@@ -200,6 +169,47 @@ class PagesController extends Controller
             'semestre' => $semestre,
             'matiere' => $matiere,
             'fichiers' => $fichiers,
+        ]);
+    }
+
+    public function displayEmploisDuTemps() {
+        $user = Auth::user();
+
+        if ($user->role !== 'etudiant') {
+            abort(403, 'Accès non autorisé. Seuls les étudiants peuvent accéder à cette page.');
+        }
+
+        $etudiant = $user->etudiant;
+        if (!$etudiant || is_null($etudiant->promotion_id)) {
+            $emploisDuTemps = collect();
+            return view('pages.emplois-du-temps', compact('emploisDuTemps'))
+                ->with('error', $etudiant ? "Vous n'appartenez à aucune promotion. Veuillez contacter l'administration." : "Votre compte n'est pas associé à un profil étudiant.");
+        }
+
+        $emploisDuTemps = EmploiDuTemps::with(['semestre'])
+            ->whereHas('semestre', function ($query) use ($etudiant) {
+                $query->where('promotion_id', $etudiant->promotion_id);
+            })
+            ->orderByDesc('debut')
+            ->get();
+
+        return view('pages.emplois-du-temps', compact('emploisDuTemps'));
+    }
+
+    public function displayEmploiDuTemps(EmploiDuTemps $emploiDuTemps) {
+        $joursOrder = ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"];
+        $joursSql = "'" . implode("','", $joursOrder) . "'";
+
+        $cours = Cours::with(['matiere.unite', 'matiere.enseignant.user', 'salle'])
+            ->where('emploi_du_temps_id', $emploiDuTemps->id)
+            ->orderByRaw("FIELD(jour, $joursSql)")
+            ->orderBy('debut')
+            ->get();
+
+        return view('pages.emploi-du-temps', [
+            'edt' => $emploiDuTemps,
+            'cours' => $cours,
+            'joursOrder' => $joursOrder,
         ]);
     }
 }
