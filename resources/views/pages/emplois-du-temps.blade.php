@@ -33,17 +33,18 @@
                         <div class="px-4 pb-4">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 @foreach($list as $edt)
-                                    <div class="border border-gray-200 rounded-lg p-3">
+                                    <a class="border border-gray-200 rounded-lg p-3">
                                         <div class="font-medium text-gray-800">
                                             {{ ucfirst($edt->categorie) }}
                                         </div>
                                         <div class="text-xs text-gray-600">
-                                            Créé le {{ optional($edt->created_at)->format('d/m/Y') }}
+                                            {{ \Carbon\Carbon::parse($edt->debut)->format('d/m/Y') }} -
+                                            {{ \Carbon\Carbon::parse($edt->fin)->format('d/m/Y') }}
                                         </div>
                                         @if($edt->actif)
                                             <div class="mt-1 inline-block text-[10px] text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full">Actif</div>
                                         @endif
-                                    </div>
+                                    </a>
                                 @endforeach
                             </div>
                         </div>
