@@ -24,10 +24,11 @@
             $jours = $joursOrder ?? ['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'];
         @endphp
 
-        <div class="carousel carousel-center bg-white rounded-box w-full space-x-4 p-4 mx-auto overflow-x-auto">
-            @foreach($jours as $idx => $jour)
-                @php $dayCourses = $grouped[$jour] ?? collect(); @endphp
-                <div class="carousel-item flex flex-col w-80 mx-2">
+        <div x-data="{ current: 0, total: {{ count($jours) }}, scrollTo(idx) { this.current = Math.max(0, Math.min(this.total - 1, idx)); this.$refs['card'+this.current].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); } }">
+            <div class="carousel carousel-center bg-white rounded-box w-full space-x-4 p-4 mx-auto overflow-x-auto">
+                @foreach($jours as $idx => $jour)
+                    @php $dayCourses = $grouped[$jour] ?? collect(); @endphp
+                    <div x-ref="card{{ $idx }}" class="carousel-item flex flex-col w-80 mx-2">
                     <div class="w-full border border-gray-300 rounded-2xl p-4 text-gray-700 flex flex-row items-center justify-center gap-4 mb-4 hover:bg-gray-50 transition-colors duration-200 capitalize">
                         {{ $jour }}
                     </div>
@@ -45,8 +46,12 @@
                             <div class="text-sm text-gray-500">Aucun cours</div>
                         @endforelse
                     </div>
-                </div>
-            @endforeach
+                    </div>
+                @endforeach
+            </div>
+            <div class="max-w-md mx-auto mt-3 w-full flex justify-center items-center">
+                <input type="range" min="0" max="{{ max(0, count($jours) - 1) }}" step="1" x-model.number="current" @input="scrollTo(current)" class="range range-primary w-80 mx-auto">
+            </div>
         </div>
     </div>
 </x-app-layout>
