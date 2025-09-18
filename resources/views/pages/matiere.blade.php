@@ -26,7 +26,7 @@
                 </div>
                 <div class="w-full border border-gray-300 rounded-2xl p-4 flex flex-col gap-4">
                     @foreach ($fichiers->where('categorie', 'cours') as $fichier)
-                        <a href="#"
+                        <a href="{{ Storage::url($fichier->chemin) }}" target="_blank" rel="noopener noreferrer"
                            class="py-2 w-full text-center hover:bg-black hover:text-white rounded-full border border-gray-300 transition-colors duration-200">
                             {{ $fichier->nom }}
                         </a>
@@ -41,7 +41,7 @@
                 </div>
                 <div class="w-full border border-gray-300 rounded-2xl p-4 flex flex-col gap-4">
                     @foreach ($fichiers->where('categorie', 'td&tp') as $fichier)
-                        <a href="#"
+                        <a href="{{ Storage::url($fichier->chemin) }}" target="_blank" rel="noopener noreferrer"
                            class="py-2 w-full text-center hover:bg-black hover:text-white rounded-full border border-gray-300 transition-colors duration-200">
                             {{ $fichier->nom }}
                         </a>
@@ -56,7 +56,7 @@
                 </div>
                 <div class="w-full border border-gray-300 rounded-2xl p-4 flex flex-col gap-4">
                     @foreach ($fichiers->where('categorie', 'evaluation') as $fichier)
-                        <a href="#"
+                        <a href="{{ Storage::url($fichier->chemin) }}" target="_blank" rel="noopener noreferrer"
                            class="py-2 w-full text-center hover:bg-black hover:text-white rounded-full border border-gray-300 transition-colors duration-200">
                             {{ $fichier->nom }}
                         </a>
@@ -71,7 +71,7 @@
                 </div>
                 <div class="w-full border border-gray-300 rounded-2xl p-4 flex flex-col gap-4">
                     @foreach ($fichiers->where('categorie', 'autre') as $fichier)
-                        <a href="#"
+                        <a href="{{ Storage::url($fichier->chemin) }}" target="_blank" rel="noopener noreferrer"
                            class="py-2 w-full text-center hover:bg-black hover:text-white rounded-full border border-gray-300 transition-colors duration-200">
                             {{ $fichier->nom }}
                         </a>
