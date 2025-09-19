@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Enseignant extends Model
 {
+    protected $fillable = [
+        'user_id',
+        'bio',
+        'statut',
+    ];
+
     /**
      * Get the user that owns the enseignant.
      */
