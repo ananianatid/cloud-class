@@ -73,16 +73,16 @@ class FiliereSeeder extends Seeder
                 'code' => 'LT',
                 'description' => 'La filière Logistique et Transport forme des spécialistes en gestion de flux, transport et chaîne logistique.'
             ],
-            [
-                'nom' => 'Master Génie Logiciel',
-                'code' => 'MGL',
-                'description' => 'Le master en Génie Logiciel prépare des experts en architecture logicielle et gestion de projets informatiques.'
-            ],
-            [
-                'nom' => 'Master Systèmes et Réseaux Informatiques',
-                'code' => 'MSRI',
-                'description' => 'Le master en Systèmes et Réseaux Informatiques forme des spécialistes avancés en réseaux, cybersécurité et administration systèmes.'
-            ]
+            // [
+            //     'nom' => 'Master Génie Logiciel',
+            //     'code' => 'MGL',
+            //     'description' => 'Le master en Génie Logiciel prépare des experts en architecture logicielle et gestion de projets informatiques.'
+            // ],
+            // [
+            //     'nom' => 'Master Systèmes et Réseaux Informatiques',
+            //     'code' => 'MSRI',
+            //     'description' => 'Le master en Systèmes et Réseaux Informatiques forme des spécialistes avancés en réseaux, cybersécurité et administration systèmes.'
+            // ]
         ]);
     }
 }
