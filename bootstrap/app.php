@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => App\Http\Middleware\EnsureUserHasRole::class,
             'restrict.students' => App\Http\Middleware\RestrictStudentsFromAdmin::class,
+            'restrict.teacher' => App\Http\Middleware\RestrictTeacherAccess::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

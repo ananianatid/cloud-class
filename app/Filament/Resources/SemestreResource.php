@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SemestreResource\Pages;
 use App\Filament\Resources\SemestreResource\RelationManagers;
 use App\Models\Semestre;
+use App\TeacherPermissions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -17,10 +18,17 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SemestreResource extends Resource
 {
+    use TeacherPermissions;
+
     protected static ?string $model = Semestre::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
     protected static ?string $navigationGroup = 'Académique';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return !(auth()->user() && auth()->user()->role === 'enseignant');
+    }
 
     public static function form(Form $form): Form
     {

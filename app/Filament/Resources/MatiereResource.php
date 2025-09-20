@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\MatiereResource\Pages;
 use App\Filament\Resources\MatiereResource\RelationManagers;
 use App\Models\Matiere;
+use App\TeacherPermissions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -18,10 +19,17 @@ use App\Models\Promotion;
 
 class MatiereResource extends Resource
 {
+    use TeacherPermissions;
+
     protected static ?string $model = Matiere::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
     protected static ?string $navigationGroup = 'Académique';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return !(auth()->user() && auth()->user()->role === 'enseignant');
+    }
 
     public static function form(Form $form): Form
     {

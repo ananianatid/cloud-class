@@ -26,6 +26,9 @@ class FichierResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $user = auth()->user();
+        $isTeacher = $user && $user->role === 'enseignant';
+
         return $form
             ->schema([
                 Forms\Components\Select::make('promotion_filter')
@@ -35,7 +38,8 @@ class FichierResource extends Resource
                     ->preload()
                     ->live()
                     ->dehydrated(false)
-                    ->afterStateUpdated(fn (Set $set) => $set('semestre_filter', null)),
+                    ->afterStateUpdated(fn (Set $set) => $set('semestre_filter', null))
+                    ->visible(!$isTeacher), // Masquer pour les enseignants
                 Forms\Components\Select::make('semestre_filter')
                     ->label('Semestre')
                     ->options(fn (Get $get) => Semestre::query()
@@ -46,14 +50,26 @@ class FichierResource extends Resource
                     ->preload()
                     ->live()
                     ->dehydrated(false)
-                    ->afterStateUpdated(fn (Set $set) => $set('matiere_id', null)),
+                    ->afterStateUpdated(fn (Set $set) => $set('matiere_id', null))
+                    ->visible(!$isTeacher), // Masquer pour les enseignants
                 Forms\Components\Select::make('matiere_id')
                     ->label("Unité d'enseignement")
                     ->options(function (Get $get) {
                         $query = \App\Models\Matiere::query();
-                        if ($get('semestre_filter')) {
-                            $query->where('semestre_id', $get('semestre_filter'));
+
+                        // Si c'est un enseignant, filtrer seulement ses matières
+                        if (auth()->user() && auth()->user()->role === 'enseignant') {
+                            $enseignantId = session('current_enseignant_id');
+                            if ($enseignantId) {
+                                $query->where('enseignant_id', $enseignantId);
+                            }
+                        } else {
+                            // Pour les admins, utiliser le filtre semestre
+                            if ($get('semestre_filter')) {
+                                $query->where('semestre_id', $get('semestre_filter'));
+                            }
                         }
+
                         // Eager load unite relation for performance
                         $matieres = $query->with('unite')->get();
                         // Map: [matiere_id => unite.nom]
@@ -98,8 +114,19 @@ class FichierResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                // Si c'est un enseignant, filtrer seulement les fichiers de ses matières
+                if (auth()->user() && auth()->user()->role === 'enseignant') {
+                    $enseignantId = session('current_enseignant_id');
+                    if ($enseignantId) {
+                        $query->whereHas('matiere', function ($q) use ($enseignantId) {
+                            $q->where('enseignant_id', $enseignantId);
+                        });
+                    }
+                }
+            })
             ->columns([
-                Tables\Columns\TextColumn::make('matiere.id')
+                Tables\Columns\TextColumn::make('matiere.unite.nom')
                     ->label('Matière')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('nom')

@@ -7,6 +7,7 @@ use App\Filament\Resources\PromotionResource\RelationManagers;
 use App\Models\Promotion;
 use App\Models\Diplome;
 use App\Models\Filiere;
+use App\TeacherPermissions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -19,10 +20,17 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PromotionResource extends Resource
 {
+    use TeacherPermissions;
+
     protected static ?string $model = Promotion::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-date-range';
     protected static ?string $navigationGroup = 'Académique';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return !(auth()->user() && auth()->user()->role === 'enseignant');
+    }
 
     public static function form(Form $form): Form
     {
