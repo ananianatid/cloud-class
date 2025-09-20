@@ -26,7 +26,7 @@ class FichierResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $user = auth()->user();
+        $user = \Illuminate\Support\Facades\Auth::user();
         $isTeacher = $user && $user->role === 'enseignant';
 
         return $form
@@ -58,7 +58,7 @@ class FichierResource extends Resource
                         $query = \App\Models\Matiere::query();
 
                         // Si c'est un enseignant, filtrer seulement ses matières
-                        if (auth()->user() && auth()->user()->role === 'enseignant') {
+                        if (\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->role === 'enseignant') {
                             $enseignantId = session('current_enseignant_id');
                             if ($enseignantId) {
                                 $query->where('enseignant_id', $enseignantId);
@@ -70,16 +70,49 @@ class FichierResource extends Resource
                             }
                         }
 
-                        // Eager load unite relation for performance
-                        $matieres = $query->with('unite')->get();
-                        // Map: [matiere_id => unite.nom]
+                        // Eager load les relations nécessaires
+                        $matieres = $query->with(['unite', 'semestre.promotion'])->get();
+
+                        // Map: [matiere_id => "Unité - Promotion - Semestre"]
                         return $matieres->mapWithKeys(function ($matiere) {
-                            return [$matiere->id => $matiere->unite->nom ?? ''];
+                            $uniteNom = $matiere->unite->nom ?? 'Unité inconnue';
+                            $promotionNom = $matiere->semestre->promotion->nom ?? 'Promotion inconnue';
+                            $semestreSlug = $matiere->semestre->slug ?? 'Semestre inconnu';
+
+                            $label = "{$uniteNom} - {$promotionNom} - {$semestreSlug}";
+                            return [$matiere->id => $label];
                         })->filter();
                     })
                     ->searchable()
                     ->preload()
-                    ->required(),
+                    ->required()
+                    ->live()
+                    ->afterStateUpdated(function ($state, Set $set) {
+                        // Mettre à jour les informations de la matière sélectionnée
+                        if ($state) {
+                            $matiere = \App\Models\Matiere::with(['unite', 'semestre.promotion'])->find($state);
+                            if ($matiere) {
+                                $set('matiere_info', [
+                                    'unite' => $matiere->unite->nom ?? 'Unité inconnue',
+                                    'promotion' => $matiere->semestre->promotion->nom ?? 'Promotion inconnue',
+                                    'semestre' => $matiere->semestre->slug ?? 'Semestre inconnu',
+                                ]);
+                            }
+                        }
+                    }),
+                Forms\Components\Placeholder::make('matiere_info_display')
+                    ->label('Informations de la matière sélectionnée')
+                    ->content(function (Get $get) {
+                        $matiereInfo = $get('matiere_info');
+                        if (!$matiereInfo) {
+                            return 'Sélectionnez une matière pour voir les détails';
+                        }
+
+                        return "📚 **Unité :** {$matiereInfo['unite']}\n" .
+                               "🎓 **Promotion :** {$matiereInfo['promotion']}\n" .
+                               "📅 **Semestre :** {$matiereInfo['semestre']}";
+                    })
+                    ->visible(fn () => \Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->role === 'enseignant'),
                 Forms\Components\FileUpload::make('chemin')
                     ->directory('fichiers')
                     // ->preserveFilenames()
@@ -108,6 +141,8 @@ class FichierResource extends Resource
                 Forms\Components\Hidden::make('ajoute_par')
                     ->default(fn () => \Illuminate\Support\Facades\Auth::id())
                     ->dehydrated(true),
+                Forms\Components\Hidden::make('matiere_info')
+                    ->dehydrated(false), // Ne pas sauvegarder en base
             ]);
     }
 
@@ -116,7 +151,7 @@ class FichierResource extends Resource
         return $table
             ->modifyQueryUsing(function (Builder $query) {
                 // Si c'est un enseignant, filtrer seulement les fichiers de ses matières
-                if (auth()->user() && auth()->user()->role === 'enseignant') {
+                if (\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->role === 'enseignant') {
                     $enseignantId = session('current_enseignant_id');
                     if ($enseignantId) {
                         $query->whereHas('matiere', function ($q) use ($enseignantId) {
@@ -127,8 +162,16 @@ class FichierResource extends Resource
             })
             ->columns([
                 Tables\Columns\TextColumn::make('matiere.unite.nom')
-                    ->label('Matière')
+                    ->label('Unité')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('matiere.semestre.promotion.nom')
+                    ->label('Promotion')
+                    ->sortable()
+                    ->visible(fn () => \Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->role === 'enseignant'),
+                Tables\Columns\TextColumn::make('matiere.semestre.slug')
+                    ->label('Semestre')
+                    ->sortable()
+                    ->visible(fn () => \Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->role === 'enseignant'),
                 Tables\Columns\TextColumn::make('nom')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('categorie'),
