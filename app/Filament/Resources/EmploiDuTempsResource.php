@@ -26,6 +26,11 @@ class EmploiDuTempsResource extends Resource
 {
     protected static ?string $model = EmploiDuTemps::class;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return !(\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->role === 'enseignant');
+    }
+
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
     protected static ?string $navigationGroup = 'Temps';
 

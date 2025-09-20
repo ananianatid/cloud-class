@@ -20,6 +20,11 @@ class DiplomeResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
     protected static ?string $navigationGroup = 'Académique';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return !(\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->role === 'enseignant');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
