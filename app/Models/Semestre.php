@@ -36,4 +36,12 @@ class Semestre extends Model
     {
         return $this->belongsTo(Promotion::class);
     }
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'id';
+    }
 }

@@ -53,4 +53,12 @@ class Matiere extends Model
     {
         return $this->hasMany(Fichier::class);
     }
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'id';
+    }
 }
