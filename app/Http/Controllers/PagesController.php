@@ -99,7 +99,7 @@ class PagesController extends Controller
 
         // Récupérer le semestre à partir de la matière
         $semestre = $matiere->semestre;
-        
+
         if (!$semestre) {
             \Log::error('Aucun semestre trouvé pour cette matière', [
                 'matiere_id' => $matiere->id,
