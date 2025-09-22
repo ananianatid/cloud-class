@@ -91,8 +91,20 @@ class PagesController extends Controller
     }
 
     public function displayMatiere(Semestre $semestre, Matiere $matiere){
+        // Log pour débogage
+        \Log::info('displayMatiere appelé', [
+            'semestre_id' => $semestre->id,
+            'matiere_id' => $matiere->id,
+            'matiere_semestre_id' => $matiere->semestre_id
+        ]);
+
         // Vérifier que la matière appartient bien au semestre
         if ($matiere->semestre_id !== $semestre->id) {
+            \Log::error('Matière n\'appartient pas au semestre', [
+                'semestre_id' => $semestre->id,
+                'matiere_id' => $matiere->id,
+                'matiere_semestre_id' => $matiere->semestre_id
+            ]);
             abort(404, 'Cette matière n\'appartient pas à ce semestre.');
         }
 
@@ -104,6 +116,7 @@ class PagesController extends Controller
             'fichiers' => $fichiers,
         ]);
     }
+
 
     public function displayEmploisDuTemps() {
         $user = Auth::user();
