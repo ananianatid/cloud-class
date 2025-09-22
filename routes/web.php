@@ -19,14 +19,9 @@ Route::middleware([
 
     Route::get('/semestres', [PagesController::class,'displaySemestres'])->name('semestres');
 
-    Route::get('/semestre-{semestre}', [PagesController::class,'diplaySemestre'])->name('semestre');
+    Route::get('/semestre/{semestre}', [PagesController::class,'diplaySemestre'])->name('semestre');
 
-    Route::get('/semestre-{semestre}/matiere-{matiere}', function($semestre, $matiere) {
-        return app(PagesController::class)->displayMatiere(
-            \App\Models\Semestre::findOrFail($semestre),
-            \App\Models\Matiere::findOrFail($matiere)
-        );
-    })->name('matiere');
+    Route::get('/semestre/{semestre}/matiere/{matiere}', [PagesController::class, 'displayMatiere'])->name('matiere');
 
 
     Route::get('/emplois-du-temps', [PagesController::class,'displayEmploisDuTemps'])->name('emplois-du-temps');
