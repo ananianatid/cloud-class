@@ -91,8 +91,9 @@ class PagesController extends Controller
     }
 
     public function displayMatiere(Semestre $semestre, Matiere $matiere){
+        // Vérifier que la matière appartient bien au semestre
         if ($matiere->semestre_id !== $semestre->id) {
-            abort(404);
+            abort(404, 'Cette matière n\'appartient pas à ce semestre.');
         }
 
         $fichiers = $matiere->fichiers ?? collect();
