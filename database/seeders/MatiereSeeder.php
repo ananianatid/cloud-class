@@ -16,9 +16,9 @@ class MatiereSeeder extends Seeder
      */
     public function run(): void
     {
-        // Target semestre: numero 5 (for promotion 1)
-        $semestre5 = Semestre::where('numero', 5)->where('promotion_id', 1)->first();
-        if (!$semestre5) {
+        // Target semestre: numero 1 (for promotion 1)
+        $semestre1 = Semestre::where('numero', 1)->where('promotion_id', 1)->first();
+        if (!$semestre1) {
             return;
         }
 
@@ -29,7 +29,7 @@ class MatiereSeeder extends Seeder
             Matiere::updateOrCreate(
                 [
                     'unite_id' => $uniteId,
-                    'semestre_id' => $semestre5->id,
+                    'semestre_id' => $semestre1->id,
                 ],
                 [
                     'enseignant_id' => $enseignantId,
