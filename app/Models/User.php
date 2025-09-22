@@ -99,4 +99,20 @@ class User extends Authenticatable
     {
         return $this->role === 'enseignant';
     }
+
+    /**
+     * Get the administrateur associated with the user.
+     */
+    public function administrateur(): HasOne
+    {
+        return $this->hasOne(Administrateur::class);
+    }
+
+    /**
+     * Check if the user is an administrateur.
+     */
+    public function isAdministrateur(): bool
+    {
+        return $this->role === 'administrateur';
+    }
 }
