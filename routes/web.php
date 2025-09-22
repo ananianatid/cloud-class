@@ -21,7 +21,7 @@ Route::middleware([
 
     Route::get('/semestre/{semestre}', [PagesController::class,'diplaySemestre'])->name('semestre');
 
-    Route::get('/semestre/{semestre}/matiere/{matiere}', [PagesController::class, 'displayMatiere'])->name('matiere');
+    Route::get('/matiere/{matiere}', [PagesController::class, 'displayMatiere'])->name('matiere');
 
 
     Route::get('/emplois-du-temps', [PagesController::class,'displayEmploisDuTemps'])->name('emplois-du-temps');

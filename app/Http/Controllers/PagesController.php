@@ -90,22 +90,22 @@ class PagesController extends Controller
         ]);
     }
 
-    public function displayMatiere(Semestre $semestre, Matiere $matiere){
+    public function displayMatiere(Matiere $matiere){
         // Log pour débogage
         \Log::info('displayMatiere appelé', [
-            'semestre_id' => $semestre->id,
             'matiere_id' => $matiere->id,
             'matiere_semestre_id' => $matiere->semestre_id
         ]);
 
-        // Vérifier que la matière appartient bien au semestre
-        if ($matiere->semestre_id !== $semestre->id) {
-            \Log::error('Matière n\'appartient pas au semestre', [
-                'semestre_id' => $semestre->id,
+        // Récupérer le semestre à partir de la matière
+        $semestre = $matiere->semestre;
+        
+        if (!$semestre) {
+            \Log::error('Aucun semestre trouvé pour cette matière', [
                 'matiere_id' => $matiere->id,
                 'matiere_semestre_id' => $matiere->semestre_id
             ]);
-            abort(404, 'Cette matière n\'appartient pas à ce semestre.');
+            abort(404, 'Aucun semestre trouvé pour cette matière.');
         }
 
         $fichiers = $matiere->fichiers ?? collect();

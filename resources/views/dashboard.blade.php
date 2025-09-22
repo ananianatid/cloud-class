@@ -32,7 +32,7 @@
             </div>
         @elseif(isset($cours))
             @foreach ($cours as $matiere)
-                <a href="{{route("matiere",['semestre'=>$closestSemestre,'matiere'=>$matiere])}}" class="w-full p-3 border rounded hover:bg-gray-50">
+                <a href="{{route("matiere",['matiere'=>$matiere])}}" class="w-full p-3 border rounded hover:bg-gray-50">
                     <div class="font-semibold">
                         {{ $matiere->unite->nom ?? 'Unité inconnue' }}
                     </div>
