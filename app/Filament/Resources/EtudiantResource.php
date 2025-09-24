@@ -59,6 +59,9 @@ class EtudiantResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->with(['user', 'promotion']);
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->sortable(),

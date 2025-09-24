@@ -11,7 +11,13 @@ class EtudiantsStatsOverview extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Total Etudiants', Etudiant::count()),
+            Stat::make('Total Etudiants',
+                \Illuminate\Support\Facades\Cache::remember(
+                    'etudiants_count',
+                    300, // 5 minutes de cache
+                    fn () => Etudiant::count()
+                )
+            ),
         ];
     }
 }

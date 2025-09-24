@@ -70,8 +70,10 @@ class FichierResource extends Resource
                             }
                         }
 
-                        // Eager load les relations nécessaires
-                        $matieres = $query->with(['unite', 'semestre.promotion'])->get();
+                        // Eager load les relations nécessaires avec pagination
+                        $matieres = $query->with(['unite', 'semestre.promotion'])
+                            ->limit(100) // Limiter à 100 résultats pour éviter les timeouts
+                            ->get();
 
                         // Map: [matiere_id => "Unité - Promotion - Semestre"]
                         return $matieres->mapWithKeys(function ($matiere) {
@@ -159,6 +161,13 @@ class FichierResource extends Resource
                         });
                     }
                 }
+
+                // Eager loading des relations pour éviter les requêtes N+1
+                return $query->with([
+                    'matiere.unite',
+                    'matiere.semestre.promotion',
+                    'auteur'
+                ]);
             })
             ->columns([
                 Tables\Columns\TextColumn::make('matiere.unite.nom')

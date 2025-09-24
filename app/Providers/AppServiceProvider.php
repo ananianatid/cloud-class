@@ -4,6 +4,10 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Etudiant;
+use App\Models\Enseignant;
+use App\Models\Matiere;
+use App\Observers\StatsCacheObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,5 +26,10 @@ class AppServiceProvider extends ServiceProvider
     {
         // Fix for MySQL "key too long" error
         Schema::defaultStringLength(191);
+
+        // Enregistrer les observers pour invalider le cache
+        Etudiant::observe(StatsCacheObserver::class);
+        Enseignant::observe(StatsCacheObserver::class);
+        Matiere::observe(StatsCacheObserver::class);
     }
 }

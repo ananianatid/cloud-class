@@ -11,7 +11,13 @@ class EnseignantsStatsOverview extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Total Enseignants', Enseignant::count()),
+            Stat::make('Total Enseignants',
+                \Illuminate\Support\Facades\Cache::remember(
+                    'enseignants_count',
+                    300, // 5 minutes de cache
+                    fn () => Enseignant::count()
+                )
+            ),
         ];
     }
 }

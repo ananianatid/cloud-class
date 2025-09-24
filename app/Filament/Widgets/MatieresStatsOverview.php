@@ -11,7 +11,13 @@ class MatieresStatsOverview extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Total Matieres', Matiere::count()),
+            Stat::make('Total Matieres',
+                \Illuminate\Support\Facades\Cache::remember(
+                    'matieres_count',
+                    300, // 5 minutes de cache
+                    fn () => Matiere::count()
+                )
+            ),
         ];
     }
 }
