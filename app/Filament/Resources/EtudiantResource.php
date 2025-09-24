@@ -45,7 +45,13 @@ class EtudiantResource extends Resource
                 Forms\Components\TextInput::make('telephone_parent')
                     ->tel()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('statut')
+                Forms\Components\Select::make('statut')
+                    ->options([
+                        'actif' => 'Actif',
+                        'diplome' => 'Diplômé',
+                        'suspendu' => 'Suspendu',
+                        'abandon' => 'Abandon'
+                    ])
                     ->required(),
             ]);
     }
