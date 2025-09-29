@@ -30,15 +30,44 @@ class SalleResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('numero')
+                    ->label('Numéro de salle')
                     ->required()
-                    ->numeric(),
+                    ->placeholder('Ex: A-101, B-202, C-301')
+                    ->helperText('Format recommandé: Bâtiment-Numéro (ex: A-101)'),
                 Forms\Components\TextInput::make('capacite')
+                    ->label('Capacité')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->minValue(1)
+                    ->maxValue(500)
+                    ->placeholder('Nombre de places')
+                    ->helperText('Nombre maximum d\'étudiants que peut accueillir la salle'),
+                Forms\Components\Select::make('type')
+                    ->label('Type de salle')
+                    ->required()
+                    ->options([
+                        'cours' => 'Salle de cours',
+                        'td_tp' => 'Salle TD/TP',
+                        'laboratoire' => 'Laboratoire informatique',
+                        'examen' => 'Salle d\'examen',
+                        'reunion' => 'Salle de réunion',
+                        'conference' => 'Salle de conférence',
+                        'atelier' => 'Atelier pratique',
+                        'studio' => 'Studio multimédia',
+                        'amphi' => 'Amphithéâtre',
+                        'informatique' => 'Salle informatique',
+                    ])
+                    ->searchable()
+                    ->placeholder('Sélectionner un type de salle'),
+                Forms\Components\Textarea::make('description')
+                    ->label('Description')
+                    ->placeholder('Description de la salle, équipements, particularités...')
+                    ->rows(3)
+                    ->columnSpanFull(),
                 Forms\Components\Toggle::make('en_service')
-                    ->required(),
-                Forms\Components\TextInput::make('type')
-                    ->required(),
+                    ->label('En service')
+                    ->default(true)
+                    ->helperText('Décocher si la salle est en maintenance ou indisponible'),
             ]);
     }
 
@@ -47,35 +76,147 @@ class SalleResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('numero')
-                    ->numeric()
+                    ->label('Numéro')
+                    ->searchable()
+                    ->sortable()
+                    ->weight('bold')
+                    ->color('primary'),
+                Tables\Columns\TextColumn::make('type')
+                    ->label('Type')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'cours' => 'success',
+                        'td_tp' => 'info',
+                        'laboratoire' => 'warning',
+                        'examen' => 'danger',
+                        'reunion' => 'gray',
+                        'conference' => 'purple',
+                        'atelier' => 'orange',
+                        'studio' => 'pink',
+                        'amphi' => 'blue',
+                        'informatique' => 'cyan',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'cours' => 'Salle de cours',
+                        'td_tp' => 'TD/TP',
+                        'laboratoire' => 'Laboratoire',
+                        'examen' => 'Examen',
+                        'reunion' => 'Réunion',
+                        'conference' => 'Conférence',
+                        'atelier' => 'Atelier',
+                        'studio' => 'Studio',
+                        'amphi' => 'Amphithéâtre',
+                        'informatique' => 'Informatique',
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('capacite')
+                    ->label('Capacité')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->badge()
+                    ->color('secondary')
+                    ->suffix(' places'),
                 Tables\Columns\IconColumn::make('en_service')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('type'),
+                    ->label('En service')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger'),
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Description')
+                    ->limit(50)
+                    ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
+                        $state = $column->getState();
+                        if (strlen($state) <= 50) {
+                            return null;
+                        }
+                        return $state;
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Créé le')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Modifié le')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('type')
+                    ->label('Type de salle')
+                    ->options([
+                        'cours' => 'Salle de cours',
+                        'td_tp' => 'TD/TP',
+                        'laboratoire' => 'Laboratoire informatique',
+                        'examen' => 'Salle d\'examen',
+                        'reunion' => 'Salle de réunion',
+                        'conference' => 'Salle de conférence',
+                        'atelier' => 'Atelier pratique',
+                        'studio' => 'Studio multimédia',
+                        'amphi' => 'Amphithéâtre',
+                        'informatique' => 'Salle informatique',
+                    ])
+                    ->multiple(),
+                Tables\Filters\TernaryFilter::make('en_service')
+                    ->label('En service')
+                    ->placeholder('Toutes les salles')
+                    ->trueLabel('En service seulement')
+                    ->falseLabel('En maintenance seulement'),
+                Tables\Filters\Filter::make('capacite_min')
+                    ->form([
+                        Forms\Components\TextInput::make('capacite_min')
+                            ->label('Capacité minimum')
+                            ->numeric()
+                            ->placeholder('Ex: 30'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['capacite_min'],
+                                fn (Builder $query, $capacite): Builder => $query->where('capacite', '>=', $capacite),
+                            );
+                    }),
+                Tables\Filters\Filter::make('capacite_max')
+                    ->form([
+                        Forms\Components\TextInput::make('capacite_max')
+                            ->label('Capacité maximum')
+                            ->numeric()
+                            ->placeholder('Ex: 100'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['capacite_max'],
+                                fn (Builder $query, $capacite): Builder => $query->where('capacite', '<=', $capacite),
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('toggle_service')
+                        ->label('Basculer le statut de service')
+                        ->icon('heroicon-o-arrow-path')
+                        ->action(function ($records) {
+                            foreach ($records as $record) {
+                                $record->update(['en_service' => !$record->en_service]);
+                            }
+                        }),
                 ]),
-            ]);
+            ])
+            ->defaultSort('numero')
+            ->emptyStateHeading('Aucune salle')
+            ->emptyStateDescription('Commencez par créer votre première salle.')
+            ->emptyStateIcon('heroicon-o-building-office');
     }
 
     public static function getRelations(): array
