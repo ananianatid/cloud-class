@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\EnrollmentKeyResource\Pages;
 use App\Filament\Resources\EnrollmentKeyResource\RelationManagers;
 use App\Models\EnrollmentKey;
+use App\Models\Promotion;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Notifications\Notification;
 
 class EnrollmentKeyResource extends Resource
 {
@@ -32,14 +34,21 @@ class EnrollmentKeyResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('key')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->default(fn () => EnrollmentKey::generateUniqueKey()),
                 Forms\Components\Select::make('promotion_id')
-                    ->relationship('promotion', 'nom'),
+                    ->relationship('promotion', 'nom')
+                    ->required()
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\TextInput::make('used_by')
-                    ->numeric(),
-                Forms\Components\DateTimePicker::make('used_at'),
+                    ->numeric()
+                    ->disabled(),
+                Forms\Components\DateTimePicker::make('used_at')
+                    ->disabled(),
                 Forms\Components\DateTimePicker::make('expires_at'),
-                Forms\Components\DateTimePicker::make('revoked_at'),
+                Forms\Components\DateTimePicker::make('revoked_at')
+                    ->disabled(),
                 Forms\Components\TextInput::make('metadata'),
             ]);
     }
