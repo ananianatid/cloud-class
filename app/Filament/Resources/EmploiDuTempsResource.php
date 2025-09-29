@@ -194,9 +194,6 @@ class EmploiDuTempsResource extends Resource
     {
         return [
             RelationManagers\CoursRelationManager::class,
-            RelationManagers\WeeklyCoursRelationManager::class,
-            RelationManagers\CalendarCoursRelationManager::class,
-            RelationManagers\QuickEditCoursRelationManager::class,
         ];
     }
 
