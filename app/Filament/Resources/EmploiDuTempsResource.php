@@ -8,6 +8,7 @@ use App\Filament\Resources\EmploiDuTempsResource\Pages\ListEmploiDuTemps;
 use App\Filament\Resources\EmploiDuTempsResource\Pages\ViewEmploiDuTemps;
 use App\Filament\Resources\EmploiDuTempsResource\RelationManagers;
 use App\Models\EmploiDuTemps;
+use App\Services\CacheService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -39,7 +40,9 @@ class EmploiDuTempsResource extends Resource
         return $form
             ->schema([
                 Select::make('promotion_id')
-                    ->options(Promotion::pluck('nom', 'id'))
+                    ->options(CacheService::getPromotions()->pluck('nom', 'id'))
+                    ->searchable()
+                    ->preload()
                     ->live()
                     ->dehydrated(false)
                     ->afterStateUpdated(function (Set $set) {
@@ -52,7 +55,7 @@ class EmploiDuTempsResource extends Resource
                         if (!$promotionId) {
                             return [];
                         }
-                        return Semestre::where('promotion_id', $promotionId)
+                        return CacheService::getSemestresByPromotion($promotionId)
                             ->pluck('slug', 'id');
                     })
                     ->required()
@@ -102,6 +105,12 @@ class EmploiDuTempsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->with(['semestre.promotion', 'cours'])
+                    ->withCount('cours')
+                    ->orderBy('actif', 'desc')
+                    ->orderBy('debut', 'desc');
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('semestre.promotion.nom')
                     ->label('Promotion')
@@ -112,9 +121,25 @@ class EmploiDuTempsResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('nom')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('categorie'),
+                Tables\Columns\TextColumn::make('categorie')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'principal' => 'success',
+                        'examen' => 'danger',
+                        'devoir' => 'warning',
+                        'mission' => 'info',
+                        'autre' => 'gray',
+                    }),
                 Tables\Columns\IconColumn::make('actif')
-                    ->boolean(),
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('gray'),
+                Tables\Columns\TextColumn::make('cours_count')
+                    ->label('Nb Cours')
+                    ->badge()
+                    ->color('info'),
                 Tables\Columns\TextColumn::make('debut')
                     ->date()
                     ->sortable(),
@@ -137,7 +162,22 @@ class EmploiDuTempsResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('categorie')
+                    ->options([
+                        'principal' => 'Principal',
+                        'examen' => 'Examen',
+                        'devoir' => 'Devoir',
+                        'mission' => 'Mission',
+                        'autre' => 'Autre',
+                    ]),
+                Tables\Filters\TernaryFilter::make('actif')
+                    ->label('Actif')
+                    ->placeholder('Tous')
+                    ->trueLabel('Actifs seulement')
+                    ->falseLabel('Inactifs seulement'),
+                Tables\Filters\SelectFilter::make('semestre.promotion_id')
+                    ->label('Promotion')
+                    ->relationship('semestre.promotion', 'nom'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -153,7 +193,7 @@ class EmploiDuTempsResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\CoursRelationManager::class,
         ];
     }
 

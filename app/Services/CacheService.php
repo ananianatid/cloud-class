@@ -8,6 +8,7 @@ use App\Models\UniteEnseignement;
 use App\Models\Salle;
 use App\Models\Diplome;
 use App\Models\Filiere;
+use App\Models\Matiere;
 use Illuminate\Support\Facades\Cache;
 
 class CacheService
@@ -81,6 +82,18 @@ class CacheService
     }
 
     /**
+     * Obtenir les matières avec cache
+     */
+    public static function getMatieres(): \Illuminate\Support\Collection
+    {
+        return Cache::remember('matieres', self::DEFAULT_CACHE_DURATION, function () {
+            return Matiere::with(['unite', 'semestre.promotion', 'enseignant.user'])
+                ->orderBy('id')
+                ->get();
+        });
+    }
+
+    /**
      * Obtenir les semestres par promotion avec cache
      */
     public static function getSemestresByPromotion(int $promotionId): \Illuminate\Support\Collection
@@ -104,6 +117,7 @@ class CacheService
         Cache::forget('salles');
         Cache::forget('diplomes');
         Cache::forget('filieres');
+        Cache::forget('matieres');
 
         // Vider aussi le cache des semestres par promotion
         $promotions = Promotion::pluck('id');
