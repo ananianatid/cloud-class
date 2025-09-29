@@ -12,14 +12,9 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
-        @if(app()->environment('production'))
-            <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-            <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-            <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-            <script src="{{ asset('js/app.js') }}" defer></script>
-        @else
-            @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @endif
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
         <!-- Styles -->
         @livewireStyles
