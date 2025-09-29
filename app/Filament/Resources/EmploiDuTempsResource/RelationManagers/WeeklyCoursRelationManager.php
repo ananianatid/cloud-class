@@ -233,28 +233,6 @@ class WeeklyCoursRelationManager extends RelationManager
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-                Tables\Actions\BulkAction::make('duplicate_to_other_day')
-                    ->label('Dupliquer vers un autre jour')
-                    ->icon('heroicon-o-document-duplicate')
-                    ->form([
-                        Forms\Components\Select::make('target_jour')
-                            ->label('Jour de destination')
-                            ->options([
-                                'lundi' => 'Lundi',
-                                'mardi' => 'Mardi',
-                                'mercredi' => 'Mercredi',
-                                'jeudi' => 'Jeudi',
-                                'vendredi' => 'Vendredi',
-                                'samedi' => 'Samedi',
-                                'dimanche' => 'Dimanche',
-                            ])
-                            ->required(),
-                    ])
-                    ->action(function (array $data, $record) {
-                        $record->replicate()->fill([
-                            'jour' => $data['target_jour'],
-                        ])->save();
-                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
