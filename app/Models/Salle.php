@@ -11,6 +11,7 @@ class Salle extends Model
         'capacite',
         'en_service',
         'type',
+        'description',
     ];
 
     protected $casts = [
