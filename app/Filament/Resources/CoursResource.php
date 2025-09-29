@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CoursResource\Pages;
 use App\Filament\Resources\CoursResource\RelationManagers;
 use App\Models\Cours;
+use App\Services\CacheService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -36,7 +37,7 @@ class CoursResource extends Resource
             ->schema([
                 Forms\Components\Select::make('promotion_filter')
                     ->label('Promotion (Filtre)')
-                    ->options(\App\Models\Promotion::pluck('nom', 'id'))
+                    ->options(CacheService::getPromotions()->pluck('nom', 'id'))
                     ->searchable()
                     ->preload()
                     ->live()
@@ -51,7 +52,7 @@ class CoursResource extends Resource
                         if (!$promotionId) {
                             return [];
                         }
-                        return \App\Models\Semestre::where('promotion_id', $promotionId)
+                        return CacheService::getSemestresByPromotion($promotionId)
                             ->pluck('id', 'id')
                             ->mapWithKeys(fn ($id) => ["$id" => "Semestre $id"]);
                     })
@@ -126,6 +127,13 @@ class CoursResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->with([
+                    'emploiDuTemps',
+                    'matiere.unite',
+                    'salle'
+                ]);
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('emploiDuTemps.nom')
                     ->label('Emploi du Temps')

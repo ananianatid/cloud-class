@@ -150,6 +150,13 @@ class FichierResource extends Resource
     {
         return $table
             ->modifyQueryUsing(function (Builder $query) {
+                // Eager loading pour optimiser les performances
+                $query->with([
+                    'matiere.unite',
+                    'matiere.semestre.promotion',
+                    'auteur'
+                ]);
+
                 // Si c'est un enseignant, filtrer seulement les fichiers de ses matières
                 if (\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->role === 'enseignant') {
                     $enseignantId = session('current_enseignant_id');

@@ -67,6 +67,13 @@ class MatiereResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->with([
+                    'unite',
+                    'semestre.promotion',
+                    'enseignant.user'
+                ]);
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('unite.nom')
                     ->sortable(),
