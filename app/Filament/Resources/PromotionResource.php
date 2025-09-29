@@ -7,6 +7,7 @@ use App\Filament\Resources\PromotionResource\RelationManagers;
 use App\Models\Promotion;
 use App\Models\Diplome;
 use App\Models\Filiere;
+use App\Services\CacheService;
 use App\TeacherPermissions;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -29,7 +30,7 @@ class PromotionResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return !(auth()->user() && auth()->user()->role === 'enseignant');
+        return !(\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->role === 'enseignant');
     }
 
     public static function form(Form $form): Form
@@ -42,7 +43,9 @@ class PromotionResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('diplome_id')
-                    ->relationship('diplome', 'nom')
+                    ->options(CacheService::getDiplomes()->pluck('nom', 'id'))
+                    ->searchable()
+                    ->preload()
                     ->live()
                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                         $set('nom', self::makePromotionName(
@@ -54,7 +57,9 @@ class PromotionResource extends Resource
                     })
                     ->required(),
                 Forms\Components\Select::make('filiere_id')
-                    ->relationship('filiere', 'nom')
+                    ->options(CacheService::getFilieres()->pluck('nom', 'id'))
+                    ->searchable()
+                    ->preload()
                     ->live()
                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                         $set('nom', self::makePromotionName(
@@ -124,6 +129,12 @@ class PromotionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->with(['diplome', 'filiere'])
+                    ->orderBy('annee_fin', 'desc')
+                    ->orderBy('annee_debut', 'desc');
+            })
+            ->defaultSort('annee_fin', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('nom')
                     ->searchable(),
@@ -131,8 +142,16 @@ class PromotionResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('filiere.nom')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('annee_debut'),
-                Tables\Columns\TextColumn::make('annee_fin'),
+                Tables\Columns\TextColumn::make('annee_debut')
+                    ->label('Année de début')
+                    ->sortable()
+                    ->badge()
+                    ->color('info'),
+                Tables\Columns\TextColumn::make('annee_fin')
+                    ->label('Année de fin')
+                    ->sortable()
+                    ->badge()
+                    ->color('success'),
                 Tables\Columns\TextColumn::make('description')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -145,7 +164,19 @@ class PromotionResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('annee_fin')
+                    ->label('Année de fin')
+                    ->options(function () {
+                        $annees = Promotion::distinct()->pluck('annee_fin')->sort()->values();
+                        return $annees->mapWithKeys(fn($annee) => [$annee => $annee]);
+                    })
+                    ->multiple(),
+                Tables\Filters\SelectFilter::make('diplome_id')
+                    ->label('Diplôme')
+                    ->relationship('diplome', 'nom'),
+                Tables\Filters\SelectFilter::make('filiere_id')
+                    ->label('Filière')
+                    ->relationship('filiere', 'nom'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

@@ -6,6 +6,8 @@ use App\Models\Promotion;
 use App\Models\Semestre;
 use App\Models\UniteEnseignement;
 use App\Models\Salle;
+use App\Models\Diplome;
+use App\Models\Filiere;
 use Illuminate\Support\Facades\Cache;
 
 class CacheService
@@ -16,12 +18,15 @@ class CacheService
     const DEFAULT_CACHE_DURATION = 60;
 
     /**
-     * Obtenir les promotions avec cache
+     * Obtenir les promotions avec cache (triées par année de fin décroissante)
      */
     public static function getPromotions(): \Illuminate\Support\Collection
     {
         return Cache::remember('promotions', self::DEFAULT_CACHE_DURATION, function () {
-            return Promotion::orderBy('nom')->get();
+            return Promotion::with(['diplome', 'filiere'])
+                ->orderBy('annee_fin', 'desc')
+                ->orderBy('annee_debut', 'desc')
+                ->get();
         });
     }
 
@@ -56,6 +61,26 @@ class CacheService
     }
 
     /**
+     * Obtenir les diplômes avec cache
+     */
+    public static function getDiplomes(): \Illuminate\Support\Collection
+    {
+        return Cache::remember('diplomes', self::DEFAULT_CACHE_DURATION, function () {
+            return Diplome::orderBy('nom')->get();
+        });
+    }
+
+    /**
+     * Obtenir les filières avec cache
+     */
+    public static function getFilieres(): \Illuminate\Support\Collection
+    {
+        return Cache::remember('filieres', self::DEFAULT_CACHE_DURATION, function () {
+            return Filiere::orderBy('nom')->get();
+        });
+    }
+
+    /**
      * Obtenir les semestres par promotion avec cache
      */
     public static function getSemestresByPromotion(int $promotionId): \Illuminate\Support\Collection
@@ -77,6 +102,8 @@ class CacheService
         Cache::forget('semestres');
         Cache::forget('unites_enseignement');
         Cache::forget('salles');
+        Cache::forget('diplomes');
+        Cache::forget('filieres');
 
         // Vider aussi le cache des semestres par promotion
         $promotions = Promotion::pluck('id');
