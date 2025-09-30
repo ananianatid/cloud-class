@@ -224,8 +224,8 @@ class PagesController extends Controller
         }
 
         // Récupérer les livres de la bibliothèque
-        $livres = \App\Models\Livre::with(['categorie', 'auteur'])
-            ->orderBy('titre')
+        $livres = \App\Models\Livre::with(['categorie'])
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return view('pages.bibliotheque.index', compact('livres'));
