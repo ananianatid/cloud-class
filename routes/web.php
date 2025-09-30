@@ -27,4 +27,6 @@ Route::middleware([
     Route::get('/emplois-du-temps', [PagesController::class,'displayEmploisDuTemps'])->name('emplois-du-temps');
     Route::get('/emplois-du-temps-{emploiDuTemps}', [PagesController::class,'displayEmploiDuTemps'])->name('emploi-du-temps');
     Route::get('/emploi-du-temps-actif', [PagesController::class,'displayEmploiDuTempsActif'])->name('emploi-du-temps-actif');
+
+    Route::get('/bibliotheque', [PagesController::class,'displayBibliotheque'])->name('bibliotheque');
 });

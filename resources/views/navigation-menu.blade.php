@@ -21,6 +21,9 @@
                     <x-nav-link href="{{ route('emplois-du-temps') }}" :active="request()->routeIs('emplois-du-temps')">
                         {{ __('Emplois du temps') }}
                     </x-nav-link>
+                    <x-nav-link href="{{ route('bibliotheque') }}" :active="request()->routeIs('bibliotheque')">
+                        {{ __('Bibliothèque') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -156,6 +159,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link href="{{ route('emplois-du-temps') }}" :active="request()->routeIs('emplois-du-temps')">
                 {{ __('Emplois du temps') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('bibliotheque') }}" :active="request()->routeIs('bibliotheque')">
+                {{ __('Bibliothèque') }}
             </x-responsive-nav-link>
         </div>
 

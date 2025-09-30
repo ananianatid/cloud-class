@@ -8,7 +8,10 @@ use Illuminate\Http\Request;
 use App\Models\Semestre;
 use App\Models\EmploiDuTemps;
 use App\Models\Cours;
+use App\Models\Livre;
+use App\Services\GoogleBooksService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 class PagesController extends Controller
 {
@@ -92,7 +95,7 @@ class PagesController extends Controller
 
     public function displayMatiere(Matiere $matiere){
         // Log pour débogage
-        \Log::info('displayMatiere appelé', [
+        Log::info('displayMatiere appelé', [
             'matiere_id' => $matiere->id,
             'matiere_semestre_id' => $matiere->semestre_id
         ]);
@@ -101,7 +104,7 @@ class PagesController extends Controller
         $semestre = $matiere->semestre;
 
         if (!$semestre) {
-            \Log::error('Aucun semestre trouvé pour cette matière', [
+            Log::error('Aucun semestre trouvé pour cette matière', [
                 'matiere_id' => $matiere->id,
                 'matiere_semestre_id' => $matiere->semestre_id
             ]);
@@ -208,5 +211,65 @@ class PagesController extends Controller
             'cours' => $cours,
             'joursOrder' => $joursOrder,
         ]);
+    }
+
+    public function displayBibliotheque(Request $request) {
+        $user = Auth::user();
+
+        if ($user->role !== 'etudiant') {
+            abort(403, 'Accès non autorisé. Seuls les étudiants peuvent accéder à cette page.');
+        }
+
+        $googleBooksService = new GoogleBooksService();
+        $livres = collect();
+        $searchQuery = $request->get('search', '');
+
+        // Récupérer les livres de la base de données
+        $livresDb = Livre::with('categorieLivre')->get();
+
+        // Enrichir avec les données de l'API Google Books
+        foreach ($livresDb as $livre) {
+            $bookData = $googleBooksService->searchByIsbn($livre->isbn);
+
+            if ($bookData) {
+                $livres->push([
+                    'id' => $livre->id,
+                    'isbn' => $livre->isbn,
+                    'categorie' => $livre->categorieLivre->nom ?? 'Non catégorisé',
+                    'chemin_fichier' => $livre->chemin_fichier,
+                    'api_data' => $bookData,
+                    'created_at' => $livre->created_at,
+                ]);
+            } else {
+                // Si pas de données API, utiliser des données par défaut
+                $livres->push([
+                    'id' => $livre->id,
+                    'isbn' => $livre->isbn,
+                    'categorie' => $livre->categorieLivre->nom ?? 'Non catégorisé',
+                    'chemin_fichier' => $livre->chemin_fichier,
+                    'api_data' => [
+                        'title' => 'Livre non trouvé',
+                        'authors' => ['Auteur inconnu'],
+                        'thumbnail' => null,
+                        'description' => 'Aucune information disponible pour ce livre.',
+                        'info_link' => null,
+                        'preview_link' => null,
+                    ],
+                    'created_at' => $livre->created_at,
+                ]);
+            }
+        }
+
+        // Filtrer par recherche si nécessaire
+        if ($searchQuery) {
+            $livres = $livres->filter(function ($livre) use ($searchQuery) {
+                return stripos($livre['api_data']['title'], $searchQuery) !== false ||
+                       stripos(implode(', ', $livre['api_data']['authors']), $searchQuery) !== false ||
+                       stripos($livre['categorie'], $searchQuery) !== false ||
+                       stripos($livre['isbn'], $searchQuery) !== false;
+            });
+        }
+
+        return view('pages.bibliotheque.index', compact('livres', 'searchQuery'));
     }
 }
