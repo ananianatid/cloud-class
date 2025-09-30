@@ -30,23 +30,16 @@ class LivreResource extends Resource
         return $form
             ->schema([
                 Forms\Components\FileUpload::make('chemin_fichier')
-                ->preserveFilenames()
                     ->label('Fichier du livre')
                     ->required()
                     ->acceptedFileTypes(['application/pdf', 'application/epub+zip', 'text/plain'])
                     ->maxSize(10240) // 10MB
                     ->directory('livres')
-                    ->afterStateUpdated(function (Forms\Set $set, $state) {
-                        if ($state) {
-                            // Extraire le nom du fichier sans extension
-                            $nomFichier = pathinfo($state, PATHINFO_FILENAME);
-                            $set('nom', $nomFichier);
-                        }
-                    }),
-                Forms\Components\TextInput::make('nom')
-                    ->required()
-                    ->maxLength(255)
-                    ->label('Nom du livre (extrait du nom de fichier)'),
+                    ->rules([
+                        'file',
+                        'mimes:pdf,epub,txt',
+                        'max:10240'
+                    ]),
                 Forms\Components\TextInput::make('isbn')
                     ->required()
                     ->unique(ignoreRecord: true)
@@ -63,9 +56,6 @@ class LivreResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nom')
-                    ->searchable()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('isbn')
                     ->searchable()
                     ->sortable()
