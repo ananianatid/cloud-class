@@ -23,14 +23,14 @@
         <div class="min-h-screen bg-gray-50 flex flex-col">
             <x-modern-navigation />
 
-            <!-- Page Heading -->
+            {{-- <!-- Page Heading -->
             @if (isset($header))
                 <header class="bg-white border-b border-gray-100">
                     <div class="max-w-7xl mx-auto py-2 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
-            @endif
+            @endif --}}
 
             <!-- Page Content -->
             <main class="flex-1 w-full flex justify-center items-center flex-col">
