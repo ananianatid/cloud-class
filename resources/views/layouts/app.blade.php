@@ -20,8 +20,8 @@
     <body class="font-sans antialiased">
         <x-banner />
 
-        <div class="min-h-screen bg-white flex flex-col">
-            @livewire('navigation-menu')
+        <div class="min-h-screen bg-gray-50 flex flex-col">
+            <x-modern-navigation />
 
             <!-- Page Heading -->
             @if (isset($header))
