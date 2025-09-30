@@ -132,10 +132,16 @@
             const bookMenuButtons = document.querySelectorAll('.bookMenuButton');
             const bookDropdowns = document.querySelectorAll('.bookDropdown');
 
+            console.log('Boutons trouvés:', bookMenuButtons.length);
+            console.log('Dropdowns trouvés:', bookDropdowns.length);
+
             bookMenuButtons.forEach(button => {
                 button.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    const dropdown = this.nextElementSibling;
+                    const bookCard = this.closest('.book');
+                    const dropdown = bookCard.querySelector('.bookDropdown');
+
+                    console.log('Bouton cliqué, dropdown trouvé:', dropdown);
 
                     // Fermer tous les autres dropdowns
                     bookDropdowns.forEach(dd => {
@@ -145,7 +151,9 @@
                     });
 
                     // Toggle le dropdown actuel
-                    dropdown.classList.toggle('hidden');
+                    if (dropdown) {
+                        dropdown.classList.toggle('hidden');
+                    }
                 });
             });
 
@@ -161,21 +169,51 @@
             // Gestion des actions des livres
             const bookActions = document.querySelectorAll('.bookAction');
             bookActions.forEach(action => {
-                action.addEventListener('click', function() {
+                action.addEventListener('click', function(e) {
+                    e.stopPropagation();
                     const actionType = this.getAttribute('data-action');
-                    const bookId = this.closest('.book').querySelector('.bookMenuButton').getAttribute('data-book-id');
+                    const bookCard = this.closest('.book');
+                    const bookId = bookCard.querySelector('.bookMenuButton').getAttribute('data-book-id');
+                    const bookTitle = bookCard.querySelector('h4').textContent;
+                    const bookAuthor = bookCard.querySelector('p').textContent;
 
                     switch(actionType) {
                         case 'share':
-                            alert('Fonction de partage pour le livre ' + bookId);
+                            if (navigator.share) {
+                                navigator.share({
+                                    title: bookTitle,
+                                    text: `Découvrez ce livre: ${bookTitle} - ${bookAuthor}`,
+                                    url: window.location.href
+                                });
+                            } else {
+                                const shareText = `Découvrez ce livre: ${bookTitle} - ${bookAuthor}`;
+                                navigator.clipboard.writeText(shareText).then(() => {
+                                    alert('Lien copié dans le presse-papiers !');
+                                });
+                            }
                             break;
                         case 'details':
-                            alert('Détails du livre ' + bookId);
+                            // Ouvrir Google Books dans un nouvel onglet
+                            const googleBooksUrl = `https://books.google.com/books?q=${encodeURIComponent(bookTitle)}`;
+                            window.open(googleBooksUrl, '_blank');
                             break;
                         case 'download':
-                            alert('Téléchargement du livre ' + bookId);
+                            alert(`Téléchargement de "${bookTitle}" en cours...`);
                             break;
                     }
+
+                    // Fermer le dropdown après l'action
+                    const dropdown = this.closest('.bookDropdown');
+                    if (dropdown) {
+                        dropdown.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Empêcher la fermeture des dropdowns quand on clique à l'intérieur
+            bookDropdowns.forEach(dropdown => {
+                dropdown.addEventListener('click', function(e) {
+                    e.stopPropagation();
                 });
             });
         });
