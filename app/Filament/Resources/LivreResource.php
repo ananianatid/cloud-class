@@ -122,7 +122,7 @@ class LivreResource extends Resource
             ->actions([
                 Action::make('view_google_books')
                     ->label('Voir sur Google Books')
-                    ->icon('heroicon-o-external-link')
+                    ->icon('heroicon-o-arrow-top-right-on-square')
                     ->url(function (Livre $record) {
                         $info = $record->getGoogleBooksInfo();
                         return $info['infoLink'] ?? '#';
