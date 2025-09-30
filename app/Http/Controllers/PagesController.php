@@ -209,4 +209,25 @@ class PagesController extends Controller
             'joursOrder' => $joursOrder,
         ]);
     }
+
+    public function displayBibliotheque() {
+        $user = Auth::user();
+
+        if ($user->role !== 'etudiant') {
+            abort(403, 'Accès non autorisé. Seuls les étudiants peuvent accéder à cette page.');
+        }
+
+        $etudiant = $user->etudiant;
+        if (!$etudiant) {
+            return view('pages.bibliotheque.index')
+                ->with('error', "Votre compte n'est pas associé à un profil étudiant.");
+        }
+
+        // Récupérer les livres de la bibliothèque
+        $livres = \App\Models\Livre::with(['categorie', 'auteur'])
+            ->orderBy('titre')
+            ->get();
+
+        return view('pages.bibliotheque.index', compact('livres'));
+    }
 }
