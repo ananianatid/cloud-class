@@ -230,4 +230,34 @@ class PagesController extends Controller
 
         return view('pages.bibliotheque.index', compact('livres'));
     }
+
+    public function telechargerLivre(\App\Models\Livre $livre) {
+        $user = Auth::user();
+
+        if ($user->role !== 'etudiant') {
+            abort(403, 'Accès non autorisé. Seuls les étudiants peuvent télécharger des livres.');
+        }
+
+        $etudiant = $user->etudiant;
+        if (!$etudiant) {
+            abort(403, "Votre compte n'est pas associé à un profil étudiant.");
+        }
+
+        // Vérifier que le fichier existe
+        if (!$livre->chemin_fichier || !file_exists(storage_path('app/' . $livre->chemin_fichier))) {
+            abort(404, 'Le fichier du livre n\'est pas disponible.');
+        }
+
+        // Déterminer le nom du fichier pour le téléchargement
+        $extension = pathinfo($livre->chemin_fichier, PATHINFO_EXTENSION);
+        $nomFichier = $livre->titre . '.' . $extension;
+
+        // Nettoyer le nom du fichier pour éviter les caractères problématiques
+        $nomFichier = preg_replace('/[^a-zA-Z0-9._-]/', '_', $nomFichier);
+
+        return response()->download(
+            storage_path('app/' . $livre->chemin_fichier),
+            $nomFichier
+        );
+    }
 }

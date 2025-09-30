@@ -20,7 +20,7 @@
                         type="text"
                         name="recherche"
                         placeholder="Rechercher un livre, un auteur..."
-                        class="outline-none bg-transparent text-gray-700 px-4 py-2 w-80"
+                        class="outline-none bg-transparent text-gray-700 px-4 py-2 w-80 border-white"
                         aria-label="Recherche"
                     >
                 </div>
@@ -100,12 +100,21 @@
                                             <span class="text-sm">Voir sur Google Books</span>
                                         </button>
 
-                                        <button class="bookAction flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 w-full text-left" data-action="download">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                            </svg>
-                                            <span class="text-sm">Télécharger</span>
-                                        </button>
+                                        @if($livre->chemin_fichier && file_exists(storage_path('app/' . $livre->chemin_fichier)))
+                                            <button class="bookAction flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 w-full text-left" data-action="download">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                                </svg>
+                                                <span class="text-sm">Télécharger</span>
+                                            </button>
+                                        @else
+                                            <button class="flex items-center space-x-3 px-3 py-2 text-gray-400 cursor-not-allowed rounded-lg w-full text-left" disabled>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                                </svg>
+                                                <span class="text-sm">Non disponible</span>
+                                            </button>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -204,7 +213,9 @@
                             }
                             break;
                         case 'download':
-                            alert(`Téléchargement de "${bookTitle}" en cours...`);
+                            // Rediriger vers la route de téléchargement
+                            const downloadUrl = `/livre/${bookId}/telecharger`;
+                            window.location.href = downloadUrl;
                             break;
                     }
 

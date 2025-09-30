@@ -29,4 +29,5 @@ Route::middleware([
     Route::get('/emploi-du-temps-actif', [PagesController::class,'displayEmploiDuTempsActif'])->name('emploi-du-temps-actif');
 
     Route::get('/bibliotheque', [PagesController::class,'displayBibliotheque'])->name('bibliotheque');
+    Route::get('/livre/{livre}/telecharger', [PagesController::class,'telechargerLivre'])->name('livre.telecharger');
 });
