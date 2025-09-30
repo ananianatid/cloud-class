@@ -108,4 +108,15 @@ class Livre extends Model
         $info = $this->getGoogleBooksInfo();
         return $info['image_url'] ?? null;
     }
+
+    // Accessor pour obtenir l'URL Google Books
+    public function getGoogleBooksUrlAttribute()
+    {
+        if (empty($this->isbn)) {
+            return null;
+        }
+
+        $info = $this->getGoogleBooksInfo();
+        return $info['infoLink'] ?? null;
+    }
 }

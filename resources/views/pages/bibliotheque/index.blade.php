@@ -38,7 +38,7 @@
             @if(isset($livres) && $livres->count() > 0)
                 <div class="books p-10 flex flex-row gap-4 flex-wrap justify-center">
                     @foreach($livres as $livre)
-                        <div class="book flex flex-col m-2 relative">
+                        <div class="book flex flex-col m-2 relative" data-google-books-url="{{ $livre->google_books_url }}">
                             @if($livre->image_url)
                                 <img class="w-32 h-48 object-cover rounded-2xl shadow-md" src="{{ $livre->image_url }}" alt="{{ $livre->titre }}">
                             @else
@@ -95,9 +95,9 @@
 
                                         <button class="bookAction flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 w-full text-left" data-action="details">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                                             </svg>
-                                            <span class="text-sm">Détails</span>
+                                            <span class="text-sm">Voir sur Google Books</span>
                                         </button>
 
                                         <button class="bookAction flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 w-full text-left" data-action="download">
@@ -193,9 +193,15 @@
                             }
                             break;
                         case 'details':
-                            // Ouvrir Google Books dans un nouvel onglet
-                            const googleBooksUrl = `https://books.google.com/books?q=${encodeURIComponent(bookTitle)}`;
-                            window.open(googleBooksUrl, '_blank');
+                            // Ouvrir la page Google Books spécifique du livre
+                            const googleBooksUrl = bookCard.getAttribute('data-google-books-url');
+                            if (googleBooksUrl && googleBooksUrl !== 'null') {
+                                window.open(googleBooksUrl, '_blank');
+                            } else {
+                                // Fallback vers une recherche Google Books si l'URL spécifique n'est pas disponible
+                                const fallbackUrl = `https://books.google.com/books?q=${encodeURIComponent(bookTitle)}`;
+                                window.open(fallbackUrl, '_blank');
+                            }
                             break;
                         case 'download':
                             alert(`Téléchargement de "${bookTitle}" en cours...`);
