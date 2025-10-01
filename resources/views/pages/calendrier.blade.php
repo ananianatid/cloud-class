@@ -19,13 +19,13 @@
     <div class="py-6">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <!-- Navigation du mois/année -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl mb-6">
                 <div class="p-6">
                     <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
                         <!-- Navigation par mois -->
                         <div class="flex items-center space-x-4">
                             <a href="{{ route('calendrier', ['month' => $prevMonth->month, 'year' => $prevMonth->year]) }}"
-                               class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                               class="p-2 rounded-full hover:bg-gray-100 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                 </svg>
@@ -34,7 +34,7 @@
                                 {{ \Carbon\Carbon::create($year, $month, 1)->locale('fr')->isoFormat('MMMM YYYY') }}
                             </h3>
                             <a href="{{ route('calendrier', ['month' => $nextMonth->month, 'year' => $nextMonth->year]) }}"
-                               class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                               class="p-2 rounded-full hover:bg-gray-100 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
@@ -45,7 +45,7 @@
                         <div class="flex items-center space-x-4">
                             <label for="year-select" class="text-sm font-medium text-gray-700">Année :</label>
                             <select id="year-select"
-                                    class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[120px] pr-8"
+                                    class="border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[120px] pr-8"
                                     onchange="changeYear(this.value)">
                                 @foreach($years as $yearOption)
                                     <option value="{{ $yearOption }}" {{ $yearOption == $year ? 'selected' : '' }}>
@@ -54,7 +54,7 @@
                                 @endforeach
                             </select>
                             <a href="{{ route('calendrier') }}"
-                               class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                               class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors text-sm">
                                 Aujourd'hui
                             </a>
                         </div>
@@ -63,7 +63,7 @@
             </div>
 
             <!-- Zone de swipe pour mobile -->
-            <div class="md:hidden bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div class="md:hidden bg-blue-50 border border-blue-200 rounded-2xl p-4 mb-6">
                 <div class="flex items-center justify-center space-x-2 text-blue-700">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
@@ -76,7 +76,7 @@
             </div>
 
             <!-- Liste des événements -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg"
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl"
                  x-data="{
                      currentIndex: 0,
                      touchStartX: 0,
@@ -112,14 +112,14 @@
                             <h3 class="text-xl font-semibold text-gray-900">
                                 Événements de {{ \Carbon\Carbon::create($year, $month, 1)->locale('fr')->isoFormat('MMMM YYYY') }}
                             </h3>
-                            <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                            <span class="text-sm text-gray-500 bg-gray-100 px-4 py-2 rounded-full">
                                 {{ $evenements->count() }} événement{{ $evenements->count() > 1 ? 's' : '' }}
                             </span>
                         </div>
 
                         <div class="space-y-4">
                             @foreach($evenements as $evenement)
-                                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
+                                <div class="border border-gray-200 rounded-2xl p-4 hover:shadow-md transition-shadow duration-200">
                                     <div class="flex items-start space-x-4">
                                         <!-- Indicateur de couleur -->
                                         <div class="flex-shrink-0">
@@ -181,7 +181,7 @@
                             @if(auth()->user()->role === 'admin')
                                 <div class="mt-6">
                                     <a href="{{ route('filament.admin.resources.evenements.create') }}"
-                                       class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                       class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                         <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                         </svg>
