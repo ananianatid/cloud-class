@@ -5,6 +5,33 @@
         </h2>
     </x-slot>
 
+    {{-- Styles responsive --}}
+    <style>
+        /* Améliorations pour l'affichage PC */
+        @media (min-width: 768px) {
+            .desktop-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            @media (min-width: 1024px) {
+                .desktop-grid {
+                    grid-template-columns: repeat(4, 1fr);
+                }
+            }
+        }
+
+        /* Ajustements pour les cartes sur PC */
+        .desktop-card {
+            min-height: 300px;
+        }
+
+        /* Amélioration des liens sur PC */
+        .desktop-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+
     <nav class="mb-4 text-sm text-gray-600">
         <a href="{{ route('semestres') }}" class="hover:underline">Semestres</a>
         <span class="mx-1">/</span>
@@ -13,29 +40,94 @@
         <span>{{ $matiere->unite->nom ?? 'Matière' }}</span>
     </nav>
 
-    <div
-        x-data="{
-            total: 4,
-            current: 0,
-            scrollTo(idx) {
-                this.current = Math.max(0, Math.min(this.total - 1, idx));
-                this.$refs['card'+this.current].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-            }
-        }"
-        x-init="
-            scrollTo(0);
-            window.scrollToCard = (idx) => $data.scrollTo(idx);
+    <div class="w-full flex flex-col items-center">
+        {{-- Affichage PC : Toutes les cartes en même temps --}}
+        <div class="hidden md:grid desktop-grid gap-6 w-full max-w-6xl p-4">
+            {{-- Cours --}}
+            <div class="flex flex-col w-full desktop-card">
+                <div class="w-full bg-white shadow-md rounded-full p-4 text-gray-700 flex justify-center mb-4">
+                    Cours
+                </div>
+                <div class="w-full border bg-white rounded-full p-4 flex flex-col gap-4">
+                    @foreach ($fichiers->where('categorie', 'cours') as $fichier)
+                        <a href="{{ Storage::url($fichier->chemin) }}" target="_blank" rel="noopener noreferrer"
+                           class="desktop-link py-2 w-full text-center hover:bg-black hover:text-white rounded-full border border-gray-300 transition-all duration-200">
+                            {{ $fichier->nom }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
 
-            // Écouter les événements du slider
-            document.addEventListener('slider-change', (e) => {
-                if (e.detail && typeof e.detail.value !== 'undefined') {
-                    $data.scrollTo(e.detail.value);
+            {{-- TD & TP --}}
+            <div class="flex flex-col w-full desktop-card">
+                <div class="w-full bg-white shadow-md rounded-full p-4 text-gray-700 flex justify-center mb-4">
+                    TD & TP
+                </div>
+                <div class="w-full border bg-white rounded-full p-4 flex flex-col gap-4">
+                    @foreach ($fichiers->where('categorie', 'td&tp') as $fichier)
+                        <a href="{{ Storage::url($fichier->chemin) }}" target="_blank" rel="noopener noreferrer"
+                           class="desktop-link py-2 w-full text-center hover:bg-black hover:text-white rounded-full border border-gray-300 transition-all duration-200">
+                            {{ $fichier->nom }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Évaluations --}}
+            <div class="flex flex-col w-full desktop-card">
+                <div class="w-full bg-white shadow-md rounded-full p-4 text-gray-700 flex justify-center mb-4">
+                    Évaluations
+                </div>
+                <div class="w-full border bg-white rounded-full p-4 flex flex-col gap-4">
+                    @foreach ($fichiers->where('categorie', 'evaluation') as $fichier)
+                        <a href="{{ Storage::url($fichier->chemin) }}" target="_blank" rel="noopener noreferrer"
+                           class="desktop-link py-2 w-full text-center hover:bg-black hover:text-white rounded-full border border-gray-300 transition-all duration-200">
+                            {{ $fichier->nom }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Autres --}}
+            <div class="flex flex-col w-full desktop-card">
+                <div class="w-full bg-white shadow-md rounded-full p-4 text-gray-700 flex justify-center mb-4">
+                    Autres
+                </div>
+                <div class="w-full border bg-white rounded-full p-4 flex flex-col gap-4">
+                    @foreach ($fichiers->where('categorie', 'autre') as $fichier)
+                        <a href="{{ Storage::url($fichier->chemin) }}" target="_blank" rel="noopener noreferrer"
+                           class="desktop-link py-2 w-full text-center hover:bg-black hover:text-white rounded-full border border-gray-300 transition-all duration-200">
+                            {{ $fichier->nom }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        {{-- Affichage Mobile : Carousel avec slider --}}
+        <div
+            x-data="{
+                total: 4,
+                current: 0,
+                scrollTo(idx) {
+                    this.current = Math.max(0, Math.min(this.total - 1, idx));
+                    this.$refs['card'+this.current].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                 }
-            });
-        "
-        class="w-full flex flex-col items-center"
-    >
-        <div class="carousel carousel-center rounded-box w-full md:max-w-md space-x-4 p-4 mx-auto overflow-x-auto">
+            }"
+            x-init="
+                scrollTo(0);
+                window.scrollToCard = (idx) => $data.scrollTo(idx);
+
+                // Écouter les événements du slider
+                document.addEventListener('slider-change', (e) => {
+                    if (e.detail && typeof e.detail.value !== 'undefined') {
+                        $data.scrollTo(e.detail.value);
+                    }
+                });
+            "
+            class="w-full flex flex-col items-center md:hidden"
+        >
+            <div class="carousel carousel-center rounded-box w-full space-x-4 p-4 mx-auto overflow-x-auto">
 
             {{-- Cours --}}
             <div x-ref="card0" class="carousel-item flex flex-col w-80 mx-4">
@@ -98,14 +190,15 @@
             </div>
         </div>
 
-        <div class="max-w-md mx-auto mt-3 w-full flex justify-center">
-            <x-glass-slider
-                :min="0"
-                :max="3"
-                :step="1"
-                :value="0"
-                width="320px"
-            />
+            <div class="max-w-md mx-auto mt-3 w-full flex justify-center">
+                <x-glass-slider
+                    :min="0"
+                    :max="3"
+                    :step="1"
+                    :value="0"
+                    width="320px"
+                />
+            </div>
         </div>
     </div>
 </x-app-layout>
