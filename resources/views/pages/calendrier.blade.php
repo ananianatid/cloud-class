@@ -67,6 +67,11 @@
             </div>
 
 
+            <!-- Loader de chargement des événements -->
+            <div id="eventsLoader" class="hidden">
+                <x-loader size="lg" color="primary" text="Chargement des événements..." />
+            </div>
+
             <!-- Liste des événements -->
             <div class="bg-white overflow-hidden shadow-sm rounded-2xl"
                  x-data="{

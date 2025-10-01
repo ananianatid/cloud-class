@@ -12,7 +12,7 @@
             </div>
         @endsession
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login') }}" id="loginForm">
             @csrf
 
             <div>
@@ -39,10 +39,26 @@
                     </a>
                 @endif
 
-                <x-button class="ms-4">
-                    {{ __('Log in') }}
+                <x-button class="ms-4" id="loginButton">
+                    <span id="loginText">{{ __('Log in') }}</span>
+                    <span id="loginLoader" class="hidden">
+                        <x-loader size="sm" color="white" />
+                    </span>
                 </x-button>
             </div>
         </form>
     </x-authentication-card>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function() {
+            const button = document.getElementById('loginButton');
+            const text = document.getElementById('loginText');
+            const loader = document.getElementById('loginLoader');
+
+            // Désactiver le bouton et afficher le loader
+            button.disabled = true;
+            text.classList.add('hidden');
+            loader.classList.remove('hidden');
+        });
+    </script>
 </x-guest-layout>

@@ -15,13 +15,23 @@
                 @endif
 
                 @isset($closestSemestre)
-                <a href="{{ route('semestre', ['semestre'=>$closestSemestre]) }}" class="bg-white shadow-md hover:shadow-xl w-96 rounded-full p-4 text-gray-700 flex flex-row items-center justify-center gap-4 mb-4 hover:bg-gray-50 transition-colors duration-200">
-                    Semestre {{$closestSemestre->numero}}
+                <a href="{{ route('semestre', ['semestre'=>$closestSemestre]) }}"
+                   class="bg-white shadow-md hover:shadow-xl w-96 rounded-full p-4 text-gray-700 flex flex-row items-center justify-center gap-4 mb-4 hover:bg-gray-50 transition-colors duration-200 group"
+                   onclick="showLoader(this)">
+                    <span>Semestre {{$closestSemestre->numero}}</span>
+                    <div class="hidden group-hover:block">
+                        <x-loader size="sm" color="primary" />
+                    </div>
                 </a>
                 @endisset
 
-                <a href="{{ route('emploi-du-temps-actif') }}" class="bg-white shadow-md w-96 text-blue-700 rounded-full p-4 flex flex-row items-center justify-center gap-4 mb-4 hover:bg-blue-50 transition-colors duration-200">
-                    Voir l'emploi du temps actif
+                <a href="{{ route('emploi-du-temps-actif') }}"
+                   class="bg-white shadow-md w-96 text-blue-700 rounded-full p-4 flex flex-row items-center justify-center gap-4 mb-4 hover:bg-blue-50 transition-colors duration-200 group"
+                   onclick="showLoader(this)">
+                    <span>Voir l'emploi du temps actif</span>
+                    <div class="hidden group-hover:block">
+                        <x-loader size="sm" color="primary" />
+                    </div>
                 </a>
 
                 <div class="bg-white shadow-md w-96 rounded-2xl p-4 text-gray-700 flex flex-col items-center justify-center gap-4 mb-4 [&>*]:bg-white">
@@ -51,4 +61,12 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function showLoader(element) {
+            // Ajouter un petit délai pour montrer le loader
+            element.style.opacity = '0.7';
+            element.style.pointerEvents = 'none';
+        }
+    </script>
 </x-app-layout>

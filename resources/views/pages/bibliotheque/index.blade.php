@@ -27,16 +27,24 @@
 
                 <!-- Bouton de recherche dans sa propre bulle -->
                 <div class="bg-white rounded-full py-2 px-2 box flex items-center justify-center mx-4">
-                    <button type="submit" class="p-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-full transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <button type="submit" id="searchButton" class="p-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-full transition-all duration-200">
+                        <svg id="searchIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                         </svg>
+                        <div id="searchLoader" class="hidden">
+                            <x-loader size="sm" color="primary" />
+                        </div>
                     </button>
                 </div>
             </div>
 
+            <!-- Loader de chargement des livres -->
+            <div id="booksLoader" class="hidden">
+                <x-loader size="lg" color="primary" text="Chargement des livres..." />
+            </div>
+
             @if(isset($livres) && $livres->count() > 0)
-                 <div class="books p-4 sm:p-6 lg:p-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6 justify-items-center">
+                 <div id="booksGrid" class="books p-4 sm:p-6 lg:p-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6 justify-items-center">
                     @foreach($livres as $livre)
                         <div class="book flex flex-col relative" data-google-books-url="{{ $livre->google_books_url }}">
                             @if($livre->image_url)
@@ -233,6 +241,29 @@
                     e.stopPropagation();
                 });
             });
+
+            // Gestion du loader de recherche
+            const searchButton = document.getElementById('searchButton');
+            const searchIcon = document.getElementById('searchIcon');
+            const searchLoader = document.getElementById('searchLoader');
+            const booksLoader = document.getElementById('booksLoader');
+            const booksGrid = document.getElementById('booksGrid');
+
+            if (searchButton) {
+                searchButton.addEventListener('click', function() {
+                    // Afficher le loader de recherche
+                    searchIcon.classList.add('hidden');
+                    searchLoader.classList.remove('hidden');
+                    searchButton.disabled = true;
+
+                    // Simuler un délai de recherche (à remplacer par la vraie logique AJAX)
+                    setTimeout(() => {
+                        searchIcon.classList.remove('hidden');
+                        searchLoader.classList.add('hidden');
+                        searchButton.disabled = false;
+                    }, 2000);
+                });
+            }
         });
     </script>
 </x-app-layout>
