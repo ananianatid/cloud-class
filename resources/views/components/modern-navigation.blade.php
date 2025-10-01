@@ -1,6 +1,6 @@
 <div class="flex justify-center items-center p-4">
     <!-- Navigation principale -->
-    <nav class="bg-white rounded-full py-2 px-2 w-max box flex ">
+    <nav class="bg-white rounded-full py-2 px-2 w-max shadow-md flex ">
         <!-- Logo - toujours visible -->
         <a href="{{ route('dashboard') }}" class="flex items-center px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-full transition-all duration-200">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -9,7 +9,7 @@
         </a>
 
         <!-- Liens de navigation - visibles sur PC, cachés sur mobile -->
-        <div class="hidden md:flex">
+        <div class="hidden md:flex  [&>*]:mx-1">
             <a href="{{ route('dashboard') }}" class="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-full transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-blue-50 text-blue-600' : '' }}">
                 Accueil
             </a>
@@ -41,8 +41,8 @@
     </nav>
 
     <!-- Menu des trois points avec dropdown -->
-    <div class="relative ml-4">
-        <nav class="bg-white rounded-full py-2 px-2 box flex items-center justify-center">
+    <div class="relative ml-4 ">
+        <nav class="bg-white shadow-md rounded-full py-2 px-2 box flex items-center justify-center">
             <button id="menuButton" class="p-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-full transition-all duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
@@ -51,8 +51,8 @@
         </nav>
 
         <!-- Dropdown Menu -->
-        <div id="dropdownMenu" class="dropdown absolute right-0 mt-2 w-64 bg-white-100 rounded-3xl  shadow-lg border border-gray-200 z-50 hidden backdrop-blur-xs">
-            <div class="p-4">
+        <div id="dropdownMenu" class="bg-white dropdown absolute right-0 mt-2 w-64 rounded-3xl  shadow-lg border border-gray-200 z-50 hidden backdrop-blur-xs">
+            <div class="p-4 ">
                 <!-- Profil utilisateur -->
                 <div class="flex items-center space-x-3 mb-4 pb-4 border-b border-gray-200">
                     <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
@@ -100,18 +100,10 @@
                         <span>Mon Profil</span>
                     </a>
 
-                    <a href="#" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-full transition-colors duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 0 1 0 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 0 1 0-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281Z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                        </svg>
-                        <span>Paramètres</span>
-                    </a>
-
                     <div class="border-t border-gray-200 pt-2">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="flex items-center space-x-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200 w-full text-left">
+                            <button type="submit" class="flex items-center space-x-3 px-3 py-2 text-red-600 hover:bg-red-50  rounded-full transition-colors duration-200 w-full text-left">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
                                 </svg>

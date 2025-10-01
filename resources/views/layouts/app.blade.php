@@ -17,11 +17,12 @@
         <!-- Styles -->
         @livewireStyles
 
-    </head>
-    <body class="font-sans antialiased">
-        <x-banner />
 
-        <div class="min-h-screen bg-gray-50 flex flex-col">
+    </head>
+    <body class="font-sans antialiased bg-[#F9F9F9] ">
+        {{-- <x-banner /> --}}
+
+        <div class="min-h-screen flex flex-col">
             <x-modern-navigation />
 
             {{-- <!-- Page Heading -->
