@@ -45,8 +45,11 @@ class FixPromotionsData extends Command
 
         // 3. Supprimer les doublons
         $this->removeDuplicates($dryRun);
-
-        // 4. Afficher les statistiques
+        
+        // 4. Mettre à jour les statuts
+        $this->updateStatuts($dryRun);
+        
+        // 5. Afficher les statistiques
         $this->showStatistics();
 
         $this->info('✅ Correction terminée !');
@@ -137,6 +140,18 @@ class FixPromotionsData extends Command
         }
     }
 
+    private function updateStatuts(bool $dryRun): void
+    {
+        $this->info('🔄 Mise à jour des statuts...');
+        
+        if (!$dryRun) {
+            $updated = Promotion::updateAllStatuts();
+            $this->info("  ✅ {$updated} statuts mis à jour");
+        } else {
+            $this->info("  📋 Simulation : Mise à jour des statuts selon les années");
+        }
+    }
+
     private function generateCorrectName(Promotion $promotion): string
     {
         $diplome = $promotion->diplome;
@@ -157,19 +172,17 @@ class FixPromotionsData extends Command
     private function showStatistics(): void
     {
         $this->info('📊 Statistiques des promotions :');
-
+        
         $total = Promotion::count();
         $active = Promotion::active()->count();
-        $ended = Promotion::where('annee_fin', '<', now()->year)->count();
-        $future = Promotion::where('annee_debut', '>', now()->year)->count();
-
+        $archived = Promotion::archived()->count();
+        
         $this->table(
-            ['Statut', 'Nombre'],
+            ['Statut', 'Nombre', 'Pourcentage'],
             [
-                ['Total', $total],
-                ['Actives', $active],
-                ['Terminées', $ended],
-                ['Futures', $future],
+                ['Total', $total, '100%'],
+                ['Actives', $active, $total > 0 ? round(($active / $total) * 100, 1) . '%' : '0%'],
+                ['Archivées', $archived, $total > 0 ? round(($archived / $total) * 100, 1) . '%' : '0%'],
             ]
         );
     }

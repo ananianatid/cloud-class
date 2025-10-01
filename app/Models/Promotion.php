@@ -18,11 +18,13 @@ class Promotion extends Model
         'annee_debut',
         'annee_fin',
         'description',
+        'statut',
     ];
 
     protected $casts = [
         'annee_debut' => 'integer',
         'annee_fin' => 'integer',
+        'statut' => 'string',
     ];
 
     /**
@@ -32,10 +34,12 @@ class Promotion extends Model
     {
         static::creating(function (Promotion $promotion) {
             static::validatePromotion($promotion);
+            static::updateStatut($promotion);
         });
 
         static::updating(function (Promotion $promotion) {
             static::validatePromotion($promotion);
+            static::updateStatut($promotion);
         });
     }
 
@@ -67,6 +71,20 @@ class Promotion extends Model
 
         if ($existing) {
             throw new \InvalidArgumentException('Une promotion avec cette combinaison diplôme/filière/années existe déjà');
+        }
+    }
+
+    /**
+     * Mettre à jour le statut de la promotion basé sur les années
+     */
+    private static function updateStatut(Promotion $promotion): void
+    {
+        $currentYear = now()->year;
+        
+        if ($currentYear >= $promotion->annee_debut && $currentYear <= $promotion->annee_fin) {
+            $promotion->statut = 'actif';
+        } else {
+            $promotion->statut = 'archive';
         }
     }
 
@@ -139,8 +157,7 @@ class Promotion extends Model
      */
     public function isActive(): bool
     {
-        $currentYear = now()->year;
-        return $currentYear >= $this->annee_debut && $currentYear <= $this->annee_fin;
+        return $this->statut === 'actif';
     }
 
     /**
@@ -148,7 +165,7 @@ class Promotion extends Model
      */
     public function hasEnded(): bool
     {
-        return now()->year > $this->annee_fin;
+        return $this->statut === 'archive';
     }
 
     /**
@@ -164,9 +181,15 @@ class Promotion extends Model
      */
     public function scopeActive($query)
     {
-        $currentYear = now()->year;
-        return $query->where('annee_debut', '<=', $currentYear)
-                    ->where('annee_fin', '>=', $currentYear);
+        return $query->where('statut', 'actif');
+    }
+
+    /**
+     * Scope to get archived promotions.
+     */
+    public function scopeArchived($query)
+    {
+        return $query->where('statut', 'archive');
     }
 
     /**
@@ -176,5 +199,30 @@ class Promotion extends Model
     {
         return $query->where('annee_debut', '<=', $year)
                     ->where('annee_fin', '>=', $year);
+    }
+
+    /**
+     * Mettre à jour le statut de toutes les promotions
+     */
+    public static function updateAllStatuts(): int
+    {
+        $currentYear = now()->year;
+        $updated = 0;
+
+        // Mettre à jour les promotions actives
+        $updated += static::where('annee_debut', '<=', $currentYear)
+            ->where('annee_fin', '>=', $currentYear)
+            ->where('statut', '!=', 'actif')
+            ->update(['statut' => 'actif']);
+
+        // Mettre à jour les promotions archivées
+        $updated += static::where(function ($query) use ($currentYear) {
+            $query->where('annee_debut', '>', $currentYear)
+                  ->orWhere('annee_fin', '<', $currentYear);
+        })
+        ->where('statut', '!=', 'archive')
+        ->update(['statut' => 'archive']);
+
+        return $updated;
     }
 }

@@ -111,6 +111,15 @@ class PromotionResource extends Resource
                     ]),
                 Forms\Components\TextInput::make('description')
                     ->maxLength(255),
+                Forms\Components\Select::make('statut')
+                    ->options([
+                        'actif' => 'Actif',
+                        'archive' => 'Archivé',
+                    ])
+                    ->default('actif')
+                    ->disabled()
+                    ->dehydrated(true)
+                    ->helperText('Le statut est automatiquement mis à jour selon les années de la promotion'),
             ]);
     }
 
@@ -185,18 +194,22 @@ class PromotionResource extends Resource
                     ->color('success'),
                 Tables\Columns\TextColumn::make('description')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('statut')
+                    ->label('Statut')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'actif' => 'success',
+                        'archive' => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'actif' => 'Actif',
+                        'archive' => 'Archivé',
+                    })
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('duree')
                     ->label('Durée (années)')
                     ->getStateUsing(fn ($record) => $record->duree . ' an(s)')
                     ->sortable(),
-                Tables\Columns\IconColumn::make('is_active')
-                    ->label('Statut')
-                    ->getStateUsing(fn ($record) => $record->isActive())
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger'),
                 Tables\Columns\TextColumn::make('active_etudiants_count')
                     ->label('Étudiants actifs')
                     ->counts('etudiants')
@@ -211,16 +224,13 @@ class PromotionResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('Promotions actives')
-                    ->queries(
-                        true: fn ($query) => $query->active(),
-                        false: fn ($query) => $query->where(function ($q) {
-                            $currentYear = now()->year;
-                            $q->where('annee_debut', '>', $currentYear)
-                              ->orWhere('annee_fin', '<', $currentYear);
-                        }),
-                    ),
+                Tables\Filters\SelectFilter::make('statut')
+                    ->label('Statut')
+                    ->options([
+                        'actif' => 'Actif',
+                        'archive' => 'Archivé',
+                    ])
+                    ->multiple(),
                 Tables\Filters\SelectFilter::make('annee_fin')
                     ->label('Année de fin')
                     ->options(function () {
