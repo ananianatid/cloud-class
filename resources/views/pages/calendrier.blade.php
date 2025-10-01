@@ -19,7 +19,7 @@
     <div class="py-6">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <!-- Navigation du mois/année -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl mb-6">
+            <div class="bg-white overflow-hidden shadow-sm rounded-2xl mb-6">
                 <div class="p-6">
                     <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
                         <!-- Navigation par mois -->
@@ -42,30 +42,51 @@
                         </div>
 
                         <!-- Sélecteur d'année -->
-                        <div class="flex items-center space-x-4">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
                             <label for="year-select" class="text-sm font-medium text-gray-700">Année :</label>
-                            <select id="year-select"
-                                    class="border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[120px] pr-8"
-                                    onchange="changeYear(this.value)">
-                                @foreach($years as $yearOption)
-                                    <option value="{{ $yearOption }}" {{ $yearOption == $year ? 'selected' : '' }}>
-                                        {{ $yearOption }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <a href="{{ route('calendrier') }}"
-                               class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors text-sm">
-                                Aujourd'hui
-                            </a>
+                            <div class="flex items-center space-x-2">
+                                <div class="relative">
+                                    <select id="year-select"
+                                            class="border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[120px] pr-10 appearance-none bg-white"
+                                            onchange="changeYear(this.value)">
+                                        @foreach($years as $yearOption)
+                                            <option value="{{ $yearOption }}" {{ $yearOption == $year ? 'selected' : '' }}>
+                                                {{ $yearOption }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <!-- Icône personnalisée -->
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <a href="{{ route('calendrier') }}"
+                                   class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors text-sm whitespace-nowrap">
+                                    Aujourd'hui
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-
+            <!-- Zone de swipe pour mobile -->
+            <div class="md:hidden bg-blue-50 border border-blue-200 rounded-2xl p-4 mb-6">
+                <div class="flex items-center justify-center space-x-2 text-blue-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+                    </svg>
+                    <span class="text-sm font-medium">Swipez pour changer de mois</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                </div>
+            </div>
 
             <!-- Liste des événements -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl"
+            <div class="bg-white overflow-hidden shadow-sm rounded-2xl"
                  x-data="{
                      currentIndex: 0,
                      touchStartX: 0,
@@ -106,24 +127,24 @@
                             </span>
                         </div>
 
-                        <div class="space-y-4">
+                        <div class="space-y-3 sm:space-y-4">
                             @foreach($evenements as $evenement)
-                                <div class="border border-gray-200 rounded-2xl p-4 hover:shadow-md transition-shadow duration-200">
-                                    <div class="flex items-start space-x-4">
+                                <div class="border border-gray-200 rounded-2xl p-3 sm:p-4 hover:shadow-md transition-shadow duration-200">
+                                    <div class="flex items-start space-x-3 sm:space-x-4">
                                         <!-- Indicateur de couleur -->
                                         <div class="flex-shrink-0">
-                                            <div class="w-4 h-4 rounded-full mt-1" style="background-color: {{ $evenement->couleur }}"></div>
+                                            <div class="w-3 h-3 sm:w-4 sm:h-4 rounded-full mt-1" style="background-color: {{ $evenement->couleur }}"></div>
                                         </div>
 
                                         <!-- Contenu de l'événement -->
                                         <div class="flex-1 min-w-0">
                                             <a href="{{ route('evenement.show', $evenement) }}"
                                                class="block group">
-                                                <h4 class="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors mb-2">
+                                                <h4 class="text-base sm:text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors mb-2">
                                                     {{ $evenement->titre }}
                                                 </h4>
 
-                                                <div class="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+                                                <div class="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4 text-sm text-gray-600 mb-3">
                                                     <div class="flex items-center space-x-1">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
