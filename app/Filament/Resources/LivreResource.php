@@ -44,11 +44,12 @@ class LivreResource extends Resource
                     ->helperText('L\'ISBN sera utilisé pour récupérer automatiquement les informations du livre via Google Books'),
 
                 FileUpload::make('chemin_fichier')
+                    ->preserveFilenames()
                     ->label('Fichier du livre')
                     ->required()
                     ->acceptedFileTypes(['application/pdf', 'application/epub+zip'])
                     ->directory('livres')
-                    ->visibility('private')
+                    ->visibility('public')
                     ->helperText('Formats acceptés: PDF, EPUB'),
 
                 Select::make('categorie_livre_id')

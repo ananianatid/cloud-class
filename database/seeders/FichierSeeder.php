@@ -19,7 +19,7 @@ class FichierSeeder extends Seeder
         Fichier::insert([
             [
                 'matiere_id' => 1,
-                'chemin' => 'storage/cours/intro-algo.pdf',
+                'chemin' => 'cours/intro-algo.pdf',
                 'nom' => 'Introduction à l\'algorithmique',
                 'categorie' => 'cours',
                 'visible' => true,
@@ -29,7 +29,7 @@ class FichierSeeder extends Seeder
             ],
             [
                 'matiere_id' => 1,
-                'chemin' => 'storage/tdtp/algo-td1.pdf',
+                'chemin' => 'tdtp/algo-td1.pdf',
                 'nom' => 'TD 1 - Bases',
                 'categorie' => 'td&tp',
                 'visible' => true,
@@ -39,7 +39,7 @@ class FichierSeeder extends Seeder
             ],
             [
                 'matiere_id' => 1,
-                'chemin' => 'storage/devoirs/devoir-algo1.pdf',
+                'chemin' => 'devoirs/devoir-algo1.pdf',
                 'nom' => 'Devoir 1',
                 'categorie' => 'devoir',
                 'visible' => false,

@@ -8,7 +8,10 @@ use Illuminate\Http\Request;
 use App\Models\Semestre;
 use App\Models\EmploiDuTemps;
 use App\Models\Cours;
+use App\Models\Fichier;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 class PagesController extends Controller
 {
@@ -92,7 +95,7 @@ class PagesController extends Controller
 
     public function displayMatiere(Matiere $matiere){
         // Log pour débogage
-        \Log::info('displayMatiere appelé', [
+        Log::info('displayMatiere appelé', [
             'matiere_id' => $matiere->id,
             'matiere_semestre_id' => $matiere->semestre_id
         ]);
@@ -101,7 +104,7 @@ class PagesController extends Controller
         $semestre = $matiere->semestre;
 
         if (!$semestre) {
-            \Log::error('Aucun semestre trouvé pour cette matière', [
+            Log::error('Aucun semestre trouvé pour cette matière', [
                 'matiere_id' => $matiere->id,
                 'matiere_semestre_id' => $matiere->semestre_id
             ]);
@@ -243,8 +246,8 @@ class PagesController extends Controller
             abort(403, "Votre compte n'est pas associé à un profil étudiant.");
         }
 
-        // Vérifier que le fichier existe
-        if (!$livre->chemin_fichier || !file_exists(storage_path('app/' . $livre->chemin_fichier))) {
+        // Vérifier que le fichier existe dans le stockage public
+        if (!$livre->chemin_fichier || !file_exists(storage_path('app/public/' . $livre->chemin_fichier))) {
             abort(404, 'Le fichier du livre n\'est pas disponible.');
         }
 
@@ -256,7 +259,7 @@ class PagesController extends Controller
         $nomFichier = preg_replace('/[^a-zA-Z0-9._-]/', '_', $nomFichier);
 
         return response()->download(
-            storage_path('app/' . $livre->chemin_fichier),
+            storage_path('app/public/' . $livre->chemin_fichier),
             $nomFichier
         );
     }

@@ -1,6 +1,6 @@
 <div class="flex justify-center items-center p-4">
     <!-- Navigation principale -->
-    <nav class="bg-white rounded-full py-2 px-2 w-max box flex">
+    <nav class="bg-white rounded-full py-2 px-2 w-max box flex ">
         <!-- Logo - toujours visible -->
         <a href="{{ route('dashboard') }}" class="flex items-center px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-full transition-all duration-200">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -51,7 +51,7 @@
         </nav>
 
         <!-- Dropdown Menu -->
-        <div id="dropdownMenu" class="dropdown absolute right-0 mt-2 w-64 bg-white rounded-4xl shadow-lg border border-gray-200 z-50 hidden">
+        <div id="dropdownMenu" class="dropdown absolute right-0 mt-2 w-64 bg-white-100 rounded-3xl  shadow-lg border border-gray-200 z-50 hidden backdrop-blur-xs">
             <div class="p-4">
                 <!-- Profil utilisateur -->
                 <div class="flex items-center space-x-3 mb-4 pb-4 border-b border-gray-200">
