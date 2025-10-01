@@ -36,9 +36,9 @@
             </div>
 
             @if(isset($livres) && $livres->count() > 0)
-                <div class="books p-10 flex flex-row gap-4 flex-wrap justify-center">
+                 <div class="books p-4 sm:p-6 lg:p-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6 justify-items-center">
                     @foreach($livres as $livre)
-                        <div class="book flex flex-col m-2 relative" data-google-books-url="{{ $livre->google_books_url }}">
+                        <div class="book flex flex-col relative" data-google-books-url="{{ $livre->google_books_url }}">
                             @if($livre->image_url)
                                 <img class="w-32 h-48 object-cover rounded-2xl shadow-md" src="{{ $livre->image_url }}" alt="{{ $livre->titre }}">
                             @else
