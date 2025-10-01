@@ -47,6 +47,25 @@
     .md\:hidden .text-gray-700 {
         color: #1f2937 !important;
     }
+
+    /* Améliorer le select du calendrier sur tablette */
+    #year-select {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        background-image: none !important;
+    }
+
+    #year-select option {
+        background-color: white;
+        color: #1f2937;
+        padding: 6px;
+    }
+
+    #year-select:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+    }
 }
 
 /* Améliorations spécifiques pour très petits écrans */
@@ -68,5 +87,24 @@
     /* Améliorer les textes dans les dropdowns */
     .dropdown .text-gray-700 {
         color: #111827 !important;
+    }
+
+    /* Améliorer le select du calendrier */
+    #year-select {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        background-image: none !important;
+    }
+
+    #year-select option {
+        background-color: white;
+        color: #1f2937;
+        padding: 8px;
+    }
+
+    #year-select:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
     }
 }
