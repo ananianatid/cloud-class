@@ -14,12 +14,15 @@ return new class extends Migration
         Schema::create('promotions', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
-            $table->foreignId('diplome_id')->constrained('diplomes')->cascadeOnDelete('null');
-            $table->foreignId('filiere_id')->constrained('filieres')->cascadeOnDelete('null');
+            $table->foreignId('diplome_id')->constrained('diplomes')->cascadeOnDelete();
+            $table->foreignId('filiere_id')->constrained('filieres')->cascadeOnDelete();
             $table->year('annee_debut');
             $table->year('annee_fin');
             $table->string('description')->nullable();
             $table->timestamps();
+
+            // Contraintes pour éviter les doublons
+            $table->unique(['diplome_id', 'filiere_id', 'annee_debut', 'annee_fin'], 'unique_promotion');
         });
     }
 

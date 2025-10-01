@@ -20,6 +20,56 @@ class Promotion extends Model
         'description',
     ];
 
+    protected $casts = [
+        'annee_debut' => 'integer',
+        'annee_fin' => 'integer',
+    ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (Promotion $promotion) {
+            static::validatePromotion($promotion);
+        });
+
+        static::updating(function (Promotion $promotion) {
+            static::validatePromotion($promotion);
+        });
+    }
+
+    /**
+     * Validate promotion data
+     */
+    private static function validatePromotion(Promotion $promotion): void
+    {
+        // Validation des années
+        if ($promotion->annee_debut < 2000 || $promotion->annee_debut > 2100) {
+            throw new \InvalidArgumentException('L\'année de début doit être entre 2000 et 2100');
+        }
+
+        if ($promotion->annee_fin < 2000 || $promotion->annee_fin > 2100) {
+            throw new \InvalidArgumentException('L\'année de fin doit être entre 2000 et 2100');
+        }
+
+        if ($promotion->annee_fin < $promotion->annee_debut) {
+            throw new \InvalidArgumentException('L\'année de fin doit être supérieure ou égale à l\'année de début');
+        }
+
+        // Vérifier l'unicité
+        $existing = static::where('diplome_id', $promotion->diplome_id)
+            ->where('filiere_id', $promotion->filiere_id)
+            ->where('annee_debut', $promotion->annee_debut)
+            ->where('annee_fin', $promotion->annee_fin)
+            ->where('id', '!=', $promotion->id ?? 0)
+            ->exists();
+
+        if ($existing) {
+            throw new \InvalidArgumentException('Une promotion avec cette combinaison diplôme/filière/années existe déjà');
+        }
+    }
+
     /**
      * Get the filiere that owns the promotion.
      */
@@ -66,5 +116,65 @@ class Promotion extends Model
     public function getFiliereNameAttribute(): string
     {
         return $this->filiere->nom ?? '';
+    }
+
+    /**
+     * Get the diplome name.
+     */
+    public function getDiplomeNameAttribute(): string
+    {
+        return $this->diplome->nom ?? '';
+    }
+
+    /**
+     * Get the duration of the promotion in years.
+     */
+    public function getDureeAttribute(): int
+    {
+        return $this->annee_fin - $this->annee_debut + 1;
+    }
+
+    /**
+     * Check if the promotion is currently active.
+     */
+    public function isActive(): bool
+    {
+        $currentYear = now()->year;
+        return $currentYear >= $this->annee_debut && $currentYear <= $this->annee_fin;
+    }
+
+    /**
+     * Check if the promotion has ended.
+     */
+    public function hasEnded(): bool
+    {
+        return now()->year > $this->annee_fin;
+    }
+
+    /**
+     * Get the full name with filiere and diplome.
+     */
+    public function getFullNameAttribute(): string
+    {
+        return $this->diplome_name . ' ' . $this->filiere_name . ' ' . $this->annee_debut . '-' . $this->annee_fin;
+    }
+
+    /**
+     * Scope to get active promotions.
+     */
+    public function scopeActive($query)
+    {
+        $currentYear = now()->year;
+        return $query->where('annee_debut', '<=', $currentYear)
+                    ->where('annee_fin', '>=', $currentYear);
+    }
+
+    /**
+     * Scope to get promotions by year.
+     */
+    public function scopeByYear($query, $year)
+    {
+        return $query->where('annee_debut', '<=', $year)
+                    ->where('annee_fin', '>=', $year);
     }
 }

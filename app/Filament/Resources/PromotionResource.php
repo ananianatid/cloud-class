@@ -72,6 +72,8 @@ class PromotionResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('annee_debut')
                     ->numeric()
+                    ->minValue(2000)
+                    ->maxValue(2100)
                     ->live()
                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                         $set('nom', self::makePromotionName(
@@ -81,9 +83,16 @@ class PromotionResource extends Resource
                             $get('annee_fin'),
                         ));
                     })
-                    ->required(),
+                    ->required()
+                    ->rules(['required', 'integer', 'min:2000', 'max:2100'])
+                    ->validationMessages([
+                        'min' => 'L\'année de début doit être supérieure ou égale à 2000',
+                        'max' => 'L\'année de début doit être inférieure ou égale à 2100',
+                    ]),
                 Forms\Components\TextInput::make('annee_fin')
                     ->numeric()
+                    ->minValue(2000)
+                    ->maxValue(2100)
                     ->live()
                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                         $set('nom', self::makePromotionName(
@@ -93,7 +102,13 @@ class PromotionResource extends Resource
                             $get('annee_fin'),
                         ));
                     })
-                    ->required(),
+                    ->required()
+                    ->rules(['required', 'integer', 'min:2000', 'max:2100', 'gte:annee_debut'])
+                    ->validationMessages([
+                        'min' => 'L\'année de fin doit être supérieure ou égale à 2000',
+                        'max' => 'L\'année de fin doit être inférieure ou égale à 2100',
+                        'gte' => 'L\'année de fin doit être supérieure ou égale à l\'année de début',
+                    ]),
                 Forms\Components\TextInput::make('description')
                     ->maxLength(255),
             ]);
@@ -111,6 +126,16 @@ class PromotionResource extends Resource
         $diplomeNom = $diplome?->nom ?? '';
         $filiereCode = $filiere?->code ?? '';
 
+        // Validation des années
+        $anneeDebutInt = (int) $anneeDebut;
+        $anneeFinInt = (int) $anneeFin;
+
+        if ($anneeDebutInt < 2000 || $anneeDebutInt > 2100 ||
+            $anneeFinInt < 2000 || $anneeFinInt > 2100 ||
+            $anneeFinInt < $anneeDebutInt) {
+            return '';
+        }
+
         $yy = function ($year) {
             $digits = preg_replace('/[^0-9]/', '', (string) $year);
             return substr($digits, -2);
@@ -123,7 +148,13 @@ class PromotionResource extends Resource
             return '';
         }
 
-        return sprintf('%s-%s-%s-%s', $diplomeNom, $filiereCode, $start, $end);
+        // Format amélioré : Diplôme-Filière-AnnéeDébut-AnnéeFin
+        return sprintf('%s-%s-%s-%s',
+            strtoupper($diplomeNom),
+            strtoupper($filiereCode),
+            $start,
+            $end
+        );
     }
 
     public static function table(Table $table): Table
@@ -154,6 +185,22 @@ class PromotionResource extends Resource
                     ->color('success'),
                 Tables\Columns\TextColumn::make('description')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('duree')
+                    ->label('Durée (années)')
+                    ->getStateUsing(fn ($record) => $record->duree . ' an(s)')
+                    ->sortable(),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('Statut')
+                    ->getStateUsing(fn ($record) => $record->isActive())
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger'),
+                Tables\Columns\TextColumn::make('active_etudiants_count')
+                    ->label('Étudiants actifs')
+                    ->counts('etudiants')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -164,6 +211,16 @@ class PromotionResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                Tables\Filters\TernaryFilter::make('is_active')
+                    ->label('Promotions actives')
+                    ->queries(
+                        true: fn ($query) => $query->active(),
+                        false: fn ($query) => $query->where(function ($q) {
+                            $currentYear = now()->year;
+                            $q->where('annee_debut', '>', $currentYear)
+                              ->orWhere('annee_fin', '<', $currentYear);
+                        }),
+                    ),
                 Tables\Filters\SelectFilter::make('annee_fin')
                     ->label('Année de fin')
                     ->options(function () {
