@@ -27,9 +27,9 @@ class UpdatePromotionStatuts extends Command
     public function handle()
     {
         $dryRun = $this->option('dry-run');
-        
+
         $this->info('🔄 Mise à jour des statuts des promotions...');
-        
+
         if ($dryRun) {
             $this->warn('Mode simulation activé - aucune modification ne sera appliquée');
         }
@@ -46,18 +46,18 @@ class UpdatePromotionStatuts extends Command
 
         // Afficher les statistiques après
         $this->showStatistics('Après');
-        
+
         $this->info('✅ Mise à jour terminée !');
     }
 
     private function showStatistics(string $label): void
     {
         $this->info("📊 Statistiques {$label} :");
-        
+
         $total = Promotion::count();
         $active = Promotion::active()->count();
         $archived = Promotion::archived()->count();
-        
+
         $this->table(
             ['Statut', 'Nombre', 'Pourcentage'],
             [

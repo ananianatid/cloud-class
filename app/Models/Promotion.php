@@ -80,7 +80,7 @@ class Promotion extends Model
     private static function updateStatut(Promotion $promotion): void
     {
         $currentYear = now()->year;
-        
+
         if ($currentYear >= $promotion->annee_debut && $currentYear <= $promotion->annee_fin) {
             $promotion->statut = 'actif';
         } else {

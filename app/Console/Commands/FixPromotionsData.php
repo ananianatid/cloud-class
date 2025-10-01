@@ -45,10 +45,10 @@ class FixPromotionsData extends Command
 
         // 3. Supprimer les doublons
         $this->removeDuplicates($dryRun);
-        
+
         // 4. Mettre à jour les statuts
         $this->updateStatuts($dryRun);
-        
+
         // 5. Afficher les statistiques
         $this->showStatistics();
 
@@ -143,7 +143,7 @@ class FixPromotionsData extends Command
     private function updateStatuts(bool $dryRun): void
     {
         $this->info('🔄 Mise à jour des statuts...');
-        
+
         if (!$dryRun) {
             $updated = Promotion::updateAllStatuts();
             $this->info("  ✅ {$updated} statuts mis à jour");
@@ -172,11 +172,11 @@ class FixPromotionsData extends Command
     private function showStatistics(): void
     {
         $this->info('📊 Statistiques des promotions :');
-        
+
         $total = Promotion::count();
         $active = Promotion::active()->count();
         $archived = Promotion::archived()->count();
-        
+
         $this->table(
             ['Statut', 'Nombre', 'Pourcentage'],
             [
