@@ -5,37 +5,6 @@
         </h2>
     </x-slot>
 
-    {{-- Styles pour la transition des border-radius --}}
-    <style>
-        .dropdown-container {
-            border-radius: 9999px; /* rounded-full */
-            transition: border-radius 0.3s ease-in-out;
-            overflow: hidden;
-        }
-
-        .dropdown-container[open] {
-            border-radius: 1rem; /* rounded-2xl */
-        }
-
-        .dropdown-container[open] summary {
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-        }
-
-        .dropdown-container summary {
-            border-radius: inherit;
-            transition: border-radius 0.3s ease-in-out;
-        }
-
-        /* Animation de l'icône */
-        .dropdown-icon {
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .dropdown-container[open] .dropdown-icon {
-            transform: rotate(180deg);
-        }
-    </style>
 
     <div class="w-screen h-screen flex flex-col items-center p-4 space-y-4 ">
         <div class="content w-full h-full flex justify-center items-center">
@@ -56,20 +25,20 @@
 
                     <div class="space-y-4">
                         @foreach($groupedBySemestre as $semNumero => $list)
-                            <details class="dropdown-container group bg-white shadow-md">
-                                <summary class="cursor-pointer select-none list-none px-6 py-4 flex items-center justify-between  transition-colors duration-50">
+                            <details class="group bg-white shadow-md rounded-3xl overflow-hidden">
+                                <summary class="cursor-pointer select-none list-none px-6 py-4 flex items-center justify-between ">
                                     <div class="flex items-center gap-3">
                                         <span class="inline-flex h-8 w-8 items-center justify-center rounded-3xl bg-blue-100 text-blue-700 font-semibold">{{ $semNumero }}</span>
                                         <span class="font-semibold text-gray-800 text-lg">Semestre {{ $semNumero }}</span>
                                     </div>
-                                    <svg class="dropdown-icon h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                     </svg>
                                 </summary>
                                 <div class="px-6 pb-4">
                                     <div class="space-y-3">
                                         @foreach($list as $edt)
-                                            <a href="{{ route('emploi-du-temps', $edt) }}" class="block bg-gray-50 rounded-full p-4 hover:bg-gray-100 transition-colors duration-200">
+                                            <a href="{{ route('emploi-du-temps', $edt) }}" class="block bg-gray-50 rounded-full p-4 px-6 hover:bg-gray-100">
                                                 <div class="flex items-center justify-between">
                                                     <div>
                                                         <div class="font-medium text-gray-800">
