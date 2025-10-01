@@ -26,7 +26,7 @@
                 <div class="bg-white shadow-md w-96 rounded-3xl p-4 text-gray-700 flex flex-col items-center justify-center gap-4 mb-4 [&>*]:bg-white">
                     @if(isset($matieres) && $matieres->isNotEmpty())
                         @foreach($matieres as $matiere)
-                            <a href="{{ route('matiere', ['matiere' => $matiere]) }}" class=" w-full p-3 rounded-full hover:bg-cyan-500 hover:shadow-md hover:shadow-cyan-500/50 hover:text-white px-6">
+                            <a href="{{ route('matiere', ['matiere' => $matiere]) }}" class=" w-full p-3 rounded-full hover:bg-cyan-500 hover:shadow-md hover:shadow-cyan-500/50 hover:text-white px-6 transition-colors duration-200">
                                 <div class="font-semibold">
                                     {{ $matiere->unite->nom ?? 'Unité inconnue' }}
                                 </div>

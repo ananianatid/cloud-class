@@ -1,3 +1,72 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Améliorations de contraste pour mobile et tablette */
+@media (max-width: 1024px) {
+    /* Améliorer le contraste des textes sur fond clair */
+    .text-gray-600 {
+        color: #374151 !important; /* Plus foncé que gray-600 */
+    }
+
+    .text-gray-500 {
+        color: #1f2937 !important; /* Plus foncé que gray-500 */
+    }
+
+    /* Améliorer le contraste des bordures */
+    .border-gray-200 {
+        border-color: #d1d5db !important; /* Plus visible */
+    }
+
+    /* Améliorer le contraste des backgrounds clairs */
+    .bg-gray-50 {
+        background-color: #f3f4f6 !important; /* Plus contrasté */
+    }
+
+    /* Améliorer les boutons avec hover */
+    .hover\:bg-gray-100:hover {
+        background-color: #e5e7eb !important; /* Plus visible */
+    }
+
+    /* Améliorer les textes dans les cartes */
+    .bg-white .text-gray-700 {
+        color: #1f2937 !important; /* Plus foncé */
+    }
+
+    /* Améliorer les placeholders */
+    input::placeholder {
+        color: #6b7280 !important; /* Plus visible */
+    }
+
+    /* Améliorer les liens */
+    a.text-gray-700 {
+        color: #1f2937 !important; /* Plus foncé */
+    }
+
+    /* Améliorer les textes de navigation mobile */
+    .md\:hidden .text-gray-700 {
+        color: #1f2937 !important;
+    }
+}
+
+/* Améliorations spécifiques pour très petits écrans */
+@media (max-width: 640px) {
+    /* Textes encore plus contrastés sur mobile */
+    .text-gray-600 {
+        color: #111827 !important; /* Très foncé */
+    }
+
+    .text-gray-500 {
+        color: #374151 !important; /* Très foncé */
+    }
+
+    /* Améliorer les boutons sur mobile */
+    button.text-gray-700 {
+        color: #111827 !important;
+    }
+
+    /* Améliorer les textes dans les dropdowns */
+    .dropdown .text-gray-700 {
+        color: #111827 !important;
+    }
+}
