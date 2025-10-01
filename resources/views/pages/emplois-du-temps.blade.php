@@ -57,9 +57,9 @@
                     <div class="space-y-4">
                         @foreach($groupedBySemestre as $semNumero => $list)
                             <details class="dropdown-container group bg-white shadow-md">
-                                <summary class="cursor-pointer select-none list-none px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors duration-200">
+                                <summary class="cursor-pointer select-none list-none px-6 py-4 flex items-center justify-between  transition-colors duration-50">
                                     <div class="flex items-center gap-3">
-                                        <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-700 font-semibold">{{ $semNumero }}</span>
+                                        <span class="inline-flex h-8 w-8 items-center justify-center rounded-3xl bg-blue-100 text-blue-700 font-semibold">{{ $semNumero }}</span>
                                         <span class="font-semibold text-gray-800 text-lg">Semestre {{ $semNumero }}</span>
                                     </div>
                                     <svg class="dropdown-icon h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
