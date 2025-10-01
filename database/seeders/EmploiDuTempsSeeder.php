@@ -125,10 +125,10 @@ class EmploiDuTempsSeeder extends Seeder
             // Emploi du temps des devoirs
             $nomDevoir = Str::slug($promotionName . '-' . $semestre->slug . '-devoir');
             $dateDevoir = $this->getDateDevoir($semestre->numero);
-            EmploiDuTemps::updateOrCreate(
+                EmploiDuTemps::updateOrCreate(
                 ['nom' => $nomDevoir],
-                [
-                    'semestre_id' => $semestre->id,
+                    [
+                        'semestre_id' => $semestre->id,
                     'categorie' => 'devoir',
                     'actif' => false,
                     'debut' => $dateDevoir,

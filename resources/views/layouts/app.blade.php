@@ -35,7 +35,7 @@
             @endif --}}
 
             <!-- Page Content -->
-            <main class="flex-1 w-full flex justify-center items-center flex-col">
+            <main class="flex-1 w-full">
                 {{ $slot }}
             </main>
         </div>

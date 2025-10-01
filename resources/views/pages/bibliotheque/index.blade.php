@@ -5,8 +5,8 @@
         </h2>
     </x-slot>
 
-    <div class="w-screen h-screen flex flex-col items-center p-4 space-y-4 bg-gray-50">
-        <div class="content w-full h-full flex flex-col justify-center items-center">
+    <div class="min-h-screen flex flex-col items-center p-4 space-y-4 bg-gray-50">
+        <div class="content w-full flex flex-col justify-center items-center">
             @if(isset($error))
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                     {{ $error }}

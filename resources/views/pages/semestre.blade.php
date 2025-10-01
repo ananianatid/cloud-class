@@ -5,8 +5,8 @@
         </h2>
     </x-slot>
 
-    <div class="w-screen h-screen flex flex-col items-center p-4 space-y-4 bg-gray-50">
-        <div class="content w-full h-full flex justify-center items-center">
+    <div class="min-h-screen flex flex-col items-center p-4 space-y-4 bg-gray-50">
+        <div class="content w-full flex justify-center items-center">
             <div class="flex flex-col">
                 <nav class="mb-4 text-sm text-gray-600 text-center">
                     <a href="{{ route('semestres') }}" class="hover:underline">Semestres</a>

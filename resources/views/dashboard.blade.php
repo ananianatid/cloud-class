@@ -5,8 +5,8 @@
         </h2>
     </x-slot>
 
-    <div class="w-screen h-screen flex flex-col items-center p-4 space-y-4 ">
-        <div class="content w-full h-full flex justify-center items-center">
+    <div class="min-h-screen flex flex-col items-center p-4 space-y-4">
+        <div class="content w-full flex justify-center items-center">
             <div class="flex flex-col">
                 @if (session('error'))
                     <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
