@@ -19,6 +19,9 @@
             <a href="{{ route('emplois-du-temps') }}" class="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-full transition-all duration-200 {{ request()->routeIs('emplois-du-temps') ? 'bg-blue-50 text-blue-600' : '' }}">
                 Emploi du temps
             </a>
+            <a href="{{ route('calendrier') }}" class="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-full transition-all duration-200 {{ request()->routeIs('calendrier') ? 'bg-blue-50 text-blue-600' : '' }}">
+                Calendrier
+            </a>
             <a href="{{ route('bibliotheque') }}" class="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-full transition-all duration-200 {{ request()->routeIs('bibliotheque') ? 'bg-blue-50 text-blue-600' : '' }}">
                 Bibliothèque
             </a>
@@ -32,6 +35,8 @@
                 <span class="px-4 py-2 bg-blue-50 text-blue-600 rounded-full">Semestre</span>
             @elseif(request()->routeIs('emplois-du-temps'))
                 <span class="px-4 py-2 bg-blue-50 text-blue-600 rounded-full">Emploi du temps</span>
+            @elseif(request()->routeIs('calendrier'))
+                <span class="px-4 py-2 bg-blue-50 text-blue-600 rounded-full">Calendrier</span>
             @elseif(request()->routeIs('bibliotheque'))
                 <span class="px-4 py-2 bg-blue-50 text-blue-600 rounded-full">Bibliothèque</span>
             @else
@@ -84,6 +89,12 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5a2.25 2.25 0 0 1 2.25 2.25v7.5" />
                             </svg>
                             <span>Emploi du temps</span>
+                        </a>
+                        <a href="{{ route('calendrier') }}" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-full transition-colors duration-200 {{ request()->routeIs('calendrier') ? 'bg-blue-50 text-blue-600' : '' }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5a2.25 2.25 0 0 1 2.25 2.25v7.5" />
+                            </svg>
+                            <span>Calendrier</span>
                         </a>
                         <a href="{{ route('bibliotheque') }}" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-full transition-colors duration-200 {{ request()->routeIs('bibliotheque') ? 'bg-blue-50 text-blue-600' : '' }}">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">

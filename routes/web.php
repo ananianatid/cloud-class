@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\TablesController;
+use App\Http\Controllers\CalendarController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -30,4 +31,8 @@ Route::middleware([
 
     Route::get('/bibliotheque', [PagesController::class,'displayBibliotheque'])->name('bibliotheque');
     Route::get('/livre/{livre}/telecharger', [PagesController::class,'telechargerLivre'])->name('livre.telecharger');
+
+    // Routes du calendrier
+    Route::get('/calendrier', [CalendarController::class, 'index'])->name('calendrier');
+    Route::get('/evenement/{evenement}', [CalendarController::class, 'showEvent'])->name('evenement.show');
 });
