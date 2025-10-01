@@ -50,5 +50,8 @@ class DatabaseSeeder extends Seeder
 
         // Clés d'inscription
         $this->call(EnrollmentKeySeeder::class);
+
+        // Événements du calendrier
+        $this->call(EvenementSeeder::class);
     }
 }

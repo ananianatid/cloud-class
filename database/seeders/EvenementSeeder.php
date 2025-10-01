@@ -15,161 +15,75 @@ class EvenementSeeder extends Seeder
      */
     public function run(): void
     {
-        // Récupérer un admin pour created_by
-        $admin = User::where('role', 'admin')->first();
-        if (!$admin) {
-            $admin = User::first(); // Fallback sur le premier utilisateur
+        // Récupérer un utilisateur pour créer les événements
+        $user = User::where('role', 'administrateur')->first();
+        if (!$user) {
+            $user = User::first();
         }
 
+        if (!$user) {
+            echo "Aucun utilisateur trouvé pour créer les événements.\n";
+            return;
+        }
+
+        // Événements pour ce mois d'octobre 2025
         $evenements = [
             [
-                'titre' => 'Journée Portes Ouvertes',
-                'corps' => '## Journée Portes Ouvertes 2024
-
-Venez découvrir notre école et nos formations !
-
-### Programme :
-- **9h00** : Accueil des visiteurs
-- **9h30** : Présentation des filières
-- **11h00** : Visite des laboratoires
-- **14h00** : Rencontre avec les étudiants
-- **16h00** : Questions/Réponses
-
-### Contact
-Pour plus d\'informations : contact@ecole.fr',
-                'date' => Carbon::now()->addDays(15)->toDateString(),
-                'heure' => '09:00',
+                'titre' => 'Rentrée académique 2025-2026',
+                'corps' => 'Cérémonie officielle de rentrée pour tous les étudiants de la promotion LIC-INFO-23-26. Présentation du programme, des enseignants et des objectifs de l\'année.',
+                'date' => '2025-10-01',
+                'heure' => '09:00:00',
                 'couleur' => '#3B82F6', // Bleu
             ],
             [
-                'titre' => 'Examen Final - Session 1',
-                'corps' => '## Examen Final - Session 1
-
-**Important** : Tous les étudiants doivent être présents.
-
-### Matériel autorisé :
-- Calculatrice scientifique
-- Feuilles de brouillon
-- Stylos bleus ou noirs
-
-### Horaires :
-- **8h00** : Accueil
-- **8h30** : Début des épreuves
-- **12h00** : Fin des épreuves
-
-### Salles :
-- Salle 101 : Génie Logiciel
-- Salle 102 : Génie Civil
-- Salle 103 : Systèmes',
-                'date' => Carbon::now()->addDays(30)->toDateString(),
-                'heure' => '08:30',
-                'couleur' => '#EF4444', // Rouge
-            ],
-            [
-                'titre' => 'Conférence IA et Éthique',
-                'corps' => '## Conférence : Intelligence Artificielle et Éthique
-
-**Intervenant** : Dr. Marie Dubois, Directrice de Recherche chez TechCorp
-
-### Thèmes abordés :
-- L\'éthique dans le développement d\'IA
-- Les enjeux de la transparence algorithmique
-- L\'impact social de l\'intelligence artificielle
-- Questions d\'avenir et perspectives
-
-### Public cible :
-- Étudiants en Génie Logiciel
-- Enseignants et chercheurs
-- Professionnels du secteur
-
-### Inscription :
-Gratuite mais obligatoire via le portail étudiant.',
-                'date' => Carbon::now()->addDays(45)->toDateString(),
-                'heure' => '14:00',
-                'couleur' => '#8B5CF6', // Violet
-            ],
-            [
-                'titre' => 'Remise des Diplômes 2024',
-                'corps' => '## Cérémonie de Remise des Diplômes 2024
-
-Félicitations à tous nos diplômés !
-
-### Programme de la journée :
-- **10h00** : Accueil des familles
-- **10h30** : Cérémonie officielle
-- **12h00** : Cocktail de clôture
-- **14h00** : Photos de groupe
-
-### Tenue :
-Tenue de cérémonie obligatoire (toge fournie)
-
-### Invités :
-Chaque diplômé peut inviter 2 personnes maximum.
-
-### Photos :
-Service photo professionnel disponible sur place.',
-                'date' => Carbon::now()->addDays(60)->toDateString(),
-                'heure' => '10:00',
-                'couleur' => '#F59E0B', // Orange
-            ],
-            [
-                'titre' => 'Réunion Pédagogique',
-                'corps' => '## Réunion Pédagogique - Semestre 5
-
-**Ordre du jour** :
-1. Bilan du semestre en cours
-2. Préparation des examens
-3. Planning des vacances
-4. Projets de fin d\'études
-5. Divers
-
-### Participants :
-- Direction pédagogique
-- Enseignants du semestre 5
-- Représentants étudiants
-
-### Documents à préparer :
-- Rapport d\'activité
-- Statistiques de réussite
-- Propositions d\'amélioration',
-                'date' => Carbon::now()->addDays(7)->toDateString(),
-                'heure' => '15:00',
+                'titre' => 'Journée portes ouvertes',
+                'corps' => 'Découverte des laboratoires informatiques et des équipements. Présentation des projets étudiants et des opportunités de stage.',
+                'date' => '2025-10-15',
+                'heure' => '14:00:00',
                 'couleur' => '#10B981', // Vert
             ],
             [
-                'titre' => 'Fête de l\'École',
-                'corps' => '## Fête de l\'École 2024
-
-Venez célébrer avec nous !
-
-### Animations :
-- **Concerts** : Groupes étudiants
-- **Food trucks** : Restauration sur place
-- **Jeux** : Tournois et animations
-- **Expositions** : Projets étudiants
-
-### Horaires :
-- **18h00** : Ouverture
-- **20h00** : Concert principal
-- **22h00** : Feux d\'artifice
-- **23h00** : Clôture
-
-### Entrée :
-Gratuite pour tous les étudiants et personnels',
-                'date' => Carbon::now()->addDays(20)->toDateString(),
-                'couleur' => '#EC4899', // Rose
+                'titre' => 'Conférence : Intelligence Artificielle',
+                'corps' => 'Conférence donnée par Dr. Marie Dubois sur les dernières avancées en Intelligence Artificielle et Machine Learning. Ouvert à tous les étudiants.',
+                'date' => '2025-10-20',
+                'heure' => '16:00:00',
+                'couleur' => '#8B5CF6', // Violet
             ],
+            [
+                'titre' => 'Examen de contrôle - Semestre 1',
+                'corps' => 'Premier examen de contrôle pour les matières du semestre 1. Algorithmique, Programmation et Mathématiques.',
+                'date' => '2025-10-25',
+                'heure' => '08:00:00',
+                'couleur' => '#EF4444', // Rouge
+            ],
+            [
+                'titre' => 'Fête de l\'Halloween',
+                'corps' => 'Soirée festive organisée par l\'association des étudiants. Concours de costumes, jeux et animations. Buffet et boissons disponibles.',
+                'date' => '2025-10-31',
+                'heure' => '19:00:00',
+                'couleur' => '#F59E0B', // Orange
+            ]
         ];
 
-        foreach ($evenements as $evenement) {
-            Evenement::create([
-                'titre' => $evenement['titre'],
-                'corps' => $evenement['corps'],
-                'date' => $evenement['date'],
-                'heure' => $evenement['heure'] ?? null,
-                'couleur' => $evenement['couleur'],
-                'created_by' => $admin->id,
+        echo "Création des événements du calendrier...\n";
+        echo "=====================================\n";
+
+        foreach ($evenements as $evenementData) {
+            $evenement = Evenement::create([
+                'titre' => $evenementData['titre'],
+                'corps' => $evenementData['corps'],
+                'date' => $evenementData['date'],
+                'heure' => $evenementData['heure'],
+                'couleur' => $evenementData['couleur'],
+                'created_by' => $user->id,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
+
+            echo "✓ Événement créé: {$evenement->titre} - {$evenement->date} à {$evenement->heure}\n";
         }
+
+        echo "\nTotal des événements créés: " . count($evenements) . "\n";
+        echo "=====================================\n";
     }
 }
