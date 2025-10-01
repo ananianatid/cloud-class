@@ -62,18 +62,7 @@
                 </div>
             </div>
 
-            <!-- Zone de swipe pour mobile -->
-            <div class="md:hidden bg-blue-50 border border-blue-200 rounded-2xl p-4 mb-6">
-                <div class="flex items-center justify-center space-x-2 text-blue-700">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
-                    </svg>
-                    <span class="text-sm font-medium">Swipez pour changer de mois</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                    </svg>
-                </div>
-            </div>
+
 
             <!-- Liste des événements -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl"
