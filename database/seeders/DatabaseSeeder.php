@@ -29,44 +29,26 @@ class DatabaseSeeder extends Seeder
             'sexe'=>'F'
         ]);
 
+        // Seeders de base
         $this->call(DiplomeSeeder::class);
         $this->call(FiliereSeeder::class);
+        $this->call(UniteEnseignementSeeder::class);
+
+        // Promotion et semestres
         $this->call(PromotionSeeder::class);
-        $this->call(EnrollmentKeySeeder::class);
+        $this->call(SemestreSeeder::class);
+
+        // Utilisateurs
         $this->call(EnseignantSeeder::class);
         $this->call(AdministrateurSeeder::class);
-        $this->call(UniteEnseignementSeeder::class);
-        $this->call(SemestreSeeder::class);
+        $this->call(EtudiantSeeder::class);
+
+        // Matières et emplois du temps
         $this->call(MatiereSeeder::class);
-        // $this->call(FichierSeeder::class);
         $this->call(EmploiDuTempsSeeder::class);
         $this->call(CoursSeeder::class);
 
-        // Default student user (after promotions exist)
-        $john = User::firstOrCreate(
-            ['email' => 'johndoe@gmail.com'],
-            [
-                'name' => 'John Doe',
-                'password' => 'password',
-                'role' => 'etudiant',
-                'sexe' => 'M',
-            ]
-        );
-
-        // Attach Etudiant profile to default user with first promotion if exists
-        $promotion = Promotion::first();
-        if ($promotion) {
-            Etudiant::firstOrCreate(
-                ['user_id' => $john->id],
-                [
-                    'promotion_id' => $promotion->id,
-                    'matricule' => 'MAT-' . str_pad((string) $john->id, 5, '0', STR_PAD_LEFT),
-                    'naissance' => Carbon::parse('2000-01-01')->toDateString(),
-                    'statut' => 'actif',
-                ]
-            );
-        }
-
-
+        // Clés d'inscription
+        $this->call(EnrollmentKeySeeder::class);
     }
 }

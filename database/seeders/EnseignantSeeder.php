@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Enseignant;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class EnseignantSeeder extends Seeder
 {
@@ -13,40 +14,40 @@ class EnseignantSeeder extends Seeder
      */
     public function run(): void
     {
-        // Créer 5 enseignants
+        // Créer des enseignants spécialisés pour les matières de la promotion 2023-2026
         $enseignants = [
             [
                 'name' => 'Dr. Marie Dubois',
                 'email' => 'marie.dubois@cloudclass.edu',
-                'password' => \Hash::make('$helsinki'),
+                'password' => Hash::make('$helsinki'),
                 'role' => 'enseignant',
                 'sexe' => 'F',
                 'statut' => 'permanent',
-                'bio' => 'Docteure en Intelligence Artificielle avec 10 ans d\'expérience dans l\'enseignement et la recherche. Spécialisée en machine learning et deep learning.',
-                'specialite' => 'Intelligence Artificielle',
+                'bio' => 'Docteure en Informatique avec 10 ans d\'expérience. Spécialisée en algorithmique, programmation et analyse.',
+                'specialite' => 'Algorithmique et Programmation',
                 'telephone' => '+237600123456',
                 'bureau' => 'Bureau A-101'
             ],
             [
                 'name' => 'Prof. Jean Martin',
                 'email' => 'jean.martin@cloudclass.edu',
-                'password' => \Hash::make('$helsinki'),
+                'password' => Hash::make('$helsinki'),
                 'role' => 'enseignant',
                 'sexe' => 'M',
                 'statut' => 'permanent',
-                'bio' => 'Professeur en Génie Logiciel, expert en développement d\'applications web et mobile. 15 ans d\'expérience dans l\'industrie.',
-                'specialite' => 'Génie Logiciel',
+                'bio' => 'Professeur en Génie Logiciel, expert en POO, développement web et génie logiciel. 15 ans d\'expérience.',
+                'specialite' => 'Génie Logiciel et Web',
                 'telephone' => '+237600123457',
                 'bureau' => 'Bureau A-102'
             ],
             [
                 'name' => 'Dr. Fatou Ndiaye',
                 'email' => 'fatou.ndiaye@cloudclass.edu',
-                'password' => \Hash::make('$helsinki'),
+                'password' => Hash::make('$helsinki'),
                 'role' => 'enseignant',
                 'sexe' => 'F',
-                'statut' => 'vacataire',
-                'bio' => 'Spécialiste en Systèmes et Réseaux, consultante en cybersécurité. Expertise en administration de serveurs et réseaux.',
+                'statut' => 'permanent',
+                'bio' => 'Spécialiste en Systèmes et Réseaux, expert en télécommunications et réseaux. 12 ans d\'expérience.',
                 'specialite' => 'Systèmes et Réseaux',
                 'telephone' => '+237600123458',
                 'bureau' => 'Bureau A-103'
@@ -54,26 +55,50 @@ class EnseignantSeeder extends Seeder
             [
                 'name' => 'Prof. Ahmed Hassan',
                 'email' => 'ahmed.hassan@cloudclass.edu',
-                'password' => \Hash::make('$helsinki'),
+                'password' => Hash::make('$helsinki'),
                 'role' => 'enseignant',
                 'sexe' => 'M',
                 'statut' => 'permanent',
-                'bio' => 'Professeur en Génie Civil, expert en construction durable et gestion de projets. 20 ans d\'expérience dans le domaine.',
-                'specialite' => 'Génie Civil',
+                'bio' => 'Professeur en Mathématiques et Électronique, expert en algèbre, analyse et électronique. 18 ans d\'expérience.',
+                'specialite' => 'Mathématiques et Électronique',
                 'telephone' => '+237600123459',
                 'bureau' => 'Bureau B-101'
             ],
             [
                 'name' => 'Dr. Sophie Laurent',
                 'email' => 'sophie.laurent@cloudclass.edu',
-                'password' => \Hash::make('$helsinki'),
+                'password' => Hash::make('$helsinki'),
                 'role' => 'enseignant',
                 'sexe' => 'F',
                 'statut' => 'permanent',
-                'bio' => 'Docteure en Communication Digitale, experte en marketing digital et stratégies de communication. 12 ans d\'expérience.',
-                'specialite' => 'Communication Digitale',
+                'bio' => 'Docteure en Langues et Communication, experte en français et anglais. 10 ans d\'expérience.',
+                'specialite' => 'Langues et Communication',
                 'telephone' => '+237600123460',
                 'bureau' => 'Bureau B-102'
+            ],
+            [
+                'name' => 'Prof. Pierre Moreau',
+                'email' => 'pierre.moreau@cloudclass.edu',
+                'password' => Hash::make('$helsinki'),
+                'role' => 'enseignant',
+                'sexe' => 'M',
+                'statut' => 'vacataire',
+                'bio' => 'Expert en Interface Homme-Machine et Design Patterns. 8 ans d\'expérience dans l\'industrie.',
+                'specialite' => 'IHM et Design Patterns',
+                'telephone' => '+237600123461',
+                'bureau' => 'Bureau C-101'
+            ],
+            [
+                'name' => 'Dr. Claire Bernard',
+                'email' => 'claire.bernard@cloudclass.edu',
+                'password' => Hash::make('$helsinki'),
+                'role' => 'enseignant',
+                'sexe' => 'F',
+                'statut' => 'permanent',
+                'bio' => 'Spécialiste en Probabilités, Statistiques et Recherche Opérationnelle. 14 ans d\'expérience.',
+                'specialite' => 'Probabilités et Statistiques',
+                'telephone' => '+237600123462',
+                'bureau' => 'Bureau C-102'
             ]
         ];
 
@@ -82,7 +107,7 @@ class EnseignantSeeder extends Seeder
             [
                 'name' => 'Admin Principal',
                 'email' => 'admin@cloudclass.edu',
-                'password' => \Hash::make('$helsinki'),
+                'password' => Hash::make('$helsinki'),
                 'role' => 'administrateur',
                 'sexe' => 'M',
                 'poste' => 'Directeur Général',
@@ -92,7 +117,7 @@ class EnseignantSeeder extends Seeder
             [
                 'name' => 'Admin Académique',
                 'email' => 'academic@cloudclass.edu',
-                'password' => \Hash::make('$helsinki'),
+                'password' => Hash::make('$helsinki'),
                 'role' => 'administrateur',
                 'sexe' => 'F',
                 'poste' => 'Directrice Académique',
@@ -102,7 +127,7 @@ class EnseignantSeeder extends Seeder
             [
                 'name' => 'Admin Technique',
                 'email' => 'tech@cloudclass.edu',
-                'password' => \Hash::make('$helsinki'),
+                'password' => Hash::make('$helsinki'),
                 'role' => 'administrateur',
                 'sexe' => 'M',
                 'poste' => 'Administrateur Système',
@@ -112,7 +137,7 @@ class EnseignantSeeder extends Seeder
             [
                 'name' => 'Admin Financier',
                 'email' => 'finance@cloudclass.edu',
-                'password' => \Hash::make('$helsinki'),
+                'password' => Hash::make('$helsinki'),
                 'role' => 'administrateur',
                 'sexe' => 'F',
                 'poste' => 'Directrice Financière',
@@ -122,7 +147,7 @@ class EnseignantSeeder extends Seeder
             [
                 'name' => 'Admin RH',
                 'email' => 'rh@cloudclass.edu',
-                'password' => \Hash::make('$helsinki'),
+                'password' => Hash::make('$helsinki'),
                 'role' => 'administrateur',
                 'sexe' => 'M',
                 'poste' => 'Directeur des Ressources Humaines',

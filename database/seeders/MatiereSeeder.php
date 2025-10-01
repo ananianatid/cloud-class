@@ -16,25 +16,91 @@ class MatiereSeeder extends Seeder
      */
     public function run(): void
     {
-        // Target semestre: numero 1 (for promotion 1)
-        $semestre1 = Semestre::where('numero', 1)->where('promotion_id', 1)->first();
-        if (!$semestre1) {
+        // Récupérer la promotion 2023-2026
+        $promotion = \App\Models\Promotion::where('nom', 'LIC-INFO-23-26')->first();
+        if (!$promotion) {
             return;
         }
 
-        $enseignantId = (int) (Enseignant::min('id') ?? 1);
+        // Récupérer les semestres
+        $semestres = Semestre::where('promotion_id', $promotion->id)->get();
+        if ($semestres->isEmpty()) {
+            return;
+        }
 
-        $unites = UniteEnseignement::orderBy('id')->limit(6)->pluck('id');
-        foreach ($unites as $uniteId) {
-            Matiere::updateOrCreate(
-                [
-                    'unite_id' => $uniteId,
-                    'semestre_id' => $semestre1->id,
-                ],
-                [
-                    'enseignant_id' => $enseignantId,
-                ]
-            );
+        // Récupérer les enseignants
+        $enseignants = Enseignant::all();
+        if ($enseignants->isEmpty()) {
+            return;
+        }
+
+        // Les unités d'enseignement seront créées pour chaque matière
+
+        // Matières par semestre - on va créer des unités d'enseignement pour chaque matière
+        $matieresParSemestre = [
+            1 => [ // Semestre 1 - 2023-2024
+                'Algorithmique',
+                'Français',
+                'Programmation',
+                'Épreuves',
+                'Électronique Général',
+                'Analyse',
+                'IHM',
+                'ATO',
+                'DEFI Circuit',
+                'Système d\'exploitation'
+            ],
+            2 => [ // Semestre 2 - 2023-2024
+                'Algèbre',
+                'POO',
+                'Programmation-web',
+                'Anglais'
+            ],
+            3 => [ // Semestre 3 - 2024-2025
+                'Environnements de télécommunication',
+                'Probabilités et statistiques'
+            ],
+            4 => [ // Semestre 4 - 2024-2025
+                'Algorithmique et complexité',
+                'Recherche Opérationnelle',
+                'Recueil de cours ATO et traitement du signal',
+                'Évolutivité des réseaux CCNA3',
+                'Applications de bureau et designs patterns',
+                'Les réseaux d\'accès filiaires',
+                'Analyse Numérique',
+                'Initiation au Génie Logiciel'
+            ]
+        ];
+
+        $enseignantIndex = 0;
+
+        foreach ($semestres as $semestre) {
+            $matieres = $matieresParSemestre[$semestre->numero] ?? [];
+
+            foreach ($matieres as $nomMatiere) {
+                // Assigner un enseignant (rotation pour avoir 1 prof pour 1-3 matières)
+                $enseignant = $enseignants[$enseignantIndex % $enseignants->count()];
+                $enseignantIndex++;
+
+                // Créer une unité d'enseignement pour cette matière
+                $unite = \App\Models\UniteEnseignement::create([
+                    'nom' => $nomMatiere,
+                    'code' => strtoupper(substr(str_replace(' ', '', $nomMatiere), 0, 6)),
+                    'credits' => 3,
+                    'description' => "Unité d'enseignement - {$nomMatiere}",
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                // Créer la matière
+                Matiere::create([
+                    'unite_id' => $unite->id,
+                    'semestre_id' => $semestre->id,
+                    'enseignant_id' => $enseignant->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
     }
 }

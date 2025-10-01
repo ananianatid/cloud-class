@@ -13,45 +13,53 @@ class SemestreSeeder extends Seeder
      */
     public function run(): void
     {
-        // Récupérer toutes les promotions de licence
-        $promotions = \App\Models\Promotion::where('diplome_id', 2)->get();
+        // Récupérer la promotion 2023-2026
+        $promotion = \App\Models\Promotion::where('nom', 'LIC-INFO-23-26')->first();
 
-        foreach ($promotions as $promotion) {
-            $anneeActuelle = 2025;
-            $agePromotion = $anneeActuelle - $promotion->annee_debut;
+        if (!$promotion) {
+            return;
+        }
 
-            // Déterminer le nombre de semestres selon l'âge de la promotion
-            $nombreSemestres = 0;
-            if ($agePromotion >= 2) {
-                $nombreSemestres = 4; // Promotions de 2 ans ou plus
-            } elseif ($agePromotion == 1) {
-                $nombreSemestres = 2; // Promotions de 1 an
-            }
-            // 0 semestre pour les promotions nouvelles (2025)
+        // Créer les 4 semestres pour la promotion 2023-2026
+        $semestres = [
+            [
+                'numero' => 1,
+                'slug' => 'semestre-1-lic-info-23-26',
+                'date_debut' => '2023-09-01',
+                'date_fin' => '2024-01-31'
+            ],
+            [
+                'numero' => 2,
+                'slug' => 'semestre-2-lic-info-23-26',
+                'date_debut' => '2024-02-01',
+                'date_fin' => '2024-06-30'
+            ],
+            [
+                'numero' => 3,
+                'slug' => 'semestre-3-lic-info-23-26',
+                'date_debut' => '2024-09-01',
+                'date_fin' => '2025-01-31'
+            ],
+            [
+                'numero' => 4,
+                'slug' => 'semestre-4-lic-info-23-26',
+                'date_debut' => '2025-02-01',
+                'date_fin' => '2025-06-30'
+            ]
+        ];
 
-            // Créer les semestres pour cette promotion
-            for ($i = 1; $i <= $nombreSemestres; $i++) {
-                // Calculer les dates de début et fin du semestre
-                $anneeSemestre = $promotion->annee_debut + (int)(($i - 1) / 2);
-                $semestreDansAnnee = (($i - 1) % 2) + 1;
-
-                // Semestre 1: Janvier à Juin, Semestre 2: Septembre à Décembre
-                if ($semestreDansAnnee == 1) {
-                    $dateDebut = Carbon::create($anneeSemestre, 1, 1);
-                    $dateFin = Carbon::create($anneeSemestre, 6, 30);
-                } else {
-                    $dateDebut = Carbon::create($anneeSemestre, 9, 1);
-                    $dateFin = Carbon::create($anneeSemestre, 12, 31);
-                }
-
-                \App\Models\Semestre::create([
-                    'numero' => $i,
-                    'slug' => 'semestre-' . $i . '-' . $promotion->nom,
+        foreach ($semestres as $semestreData) {
+            \App\Models\Semestre::updateOrCreate(
+                [
+                    'numero' => $semestreData['numero'],
                     'promotion_id' => $promotion->id,
-                    'date_debut' => $dateDebut->toDateString(),
-                    'date_fin' => $dateFin->toDateString(),
-                ]);
-            }
+                ],
+                array_merge($semestreData, [
+                    'promotion_id' => $promotion->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ])
+            );
         }
     }
 }

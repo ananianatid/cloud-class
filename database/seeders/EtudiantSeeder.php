@@ -2,9 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Etudiant;
+use App\Models\User;
+use App\Models\Promotion;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class EtudiantSeeder extends Seeder
 {
@@ -13,85 +17,56 @@ class EtudiantSeeder extends Seeder
      */
     public function run(): void
     {
-        // Récupérer toutes les promotions de licence
-        $promotions = \App\Models\Promotion::where('diplome_id', 2)->get();
-
-        // Prénoms commençant par J
-        $prenoms = [
-            'Jean', 'Jacques', 'Julien', 'Jérôme', 'Jonathan', 'Jordan',
-            'Jules', 'Justin', 'Jérémy', 'Johan', 'Joël', 'Jocelyn',
-            'Jade', 'Julie', 'Juliette', 'Jessica', 'Justine', 'Jasmine',
-            'Joëlle', 'Joséphine', 'Jocelyne', 'Jacqueline', 'Janine', 'Jeanne'
-        ];
-
-        echo "Création des étudiants test pour chaque promotion...\n";
-        echo "================================================\n";
-
-        // Créer un fichier pour sauvegarder les informations de connexion
-        $credentialsFile = storage_path('app/student_credentials.txt');
-        $credentials = "=== INFORMATIONS DE CONNEXION DES ÉTUDIANTS TEST ===\n";
-        $credentials .= "Mot de passe pour tous les étudiants: \$helsinki\n";
-        $credentials .= "Généré le: " . now()->format('Y-m-d H:i:s') . "\n\n";
-
-        foreach ($promotions as $index => $promotion) {
-            // Générer un prénom aléatoire commençant par J
-            $prenom = $prenoms[$index % count($prenoms)];
-
-            // Générer un mot de passe aléatoire
-            $password = 'Test' . rand(1000, 9999) . '!';
-
-            // Créer l'utilisateur
-            $user = \App\Models\User::create([
-                'name' => $prenom . ' Doe',
-                'email' => strtolower($prenom) . '.doe.' . $promotion->annee_debut . '.' . ($index + 1) . '@test.com',
-                'password' => Hash::make('$helsinki'),
-                'role' => 'etudiant',
-                'sexe' => rand(0, 1) ? 'M' : 'F',
-            ]);
-
-            // Générer un matricule unique
-            $matricule = 'ETU' . $promotion->annee_debut . str_pad($index + 1, 3, '0', STR_PAD_LEFT);
-
-            // Créer l'étudiant
-            \App\Models\Etudiant::create([
-                'user_id' => $user->id,
-                'promotion_id' => $promotion->id,
-                'matricule' => $matricule,
-                'naissance' => now()->subYears(rand(18, 25))->format('Y-m-d'),
-                'graduation' => $promotion->annee_fin . '-06-30',
-                'parent' => 'Parent de ' . $prenom . ' Doe',
-                'telephone_parent' => '+237' . rand(600000000, 699999999),
-                'statut' => 'actif',
-            ]);
-
-            // Afficher les informations de connexion
-            echo "Étudiant créé pour " . $promotion->nom . ":\n";
-            echo "  - Nom: " . $prenom . " Doe\n";
-            echo "  - Email: " . $user->email . "\n";
-            echo "  - Mot de passe: \$helsinki\n";
-            echo "  - Matricule: " . $matricule . "\n";
-            echo "  - Promotion: " . $promotion->nom . "\n";
-            echo "  - Filière: " . $promotion->filiere->nom . "\n";
-            echo "  - Période: " . $promotion->annee_debut . "-" . $promotion->annee_fin . "\n";
-            echo "  ----------------------------------------\n";
-
-            // Ajouter au fichier de credentials
-            $credentials .= "Étudiant #" . ($index + 1) . ":\n";
-            $credentials .= "  - Nom: " . $prenom . " Doe\n";
-            $credentials .= "  - Email: " . $user->email . "\n";
-            $credentials .= "  - Mot de passe: \$helsinki\n";
-            $credentials .= "  - Matricule: " . $matricule . "\n";
-            $credentials .= "  - Promotion: " . $promotion->nom . "\n";
-            $credentials .= "  - Filière: " . $promotion->filiere->nom . "\n";
-            $credentials .= "  - Période: " . $promotion->annee_debut . "-" . $promotion->annee_fin . "\n";
-            $credentials .= "  ----------------------------------------\n\n";
+        // Récupérer la promotion 2023-2026
+        $promotion = Promotion::where('nom', 'LIC-INFO-23-26')->first();
+        if (!$promotion) {
+            echo "Promotion LIC-INFO-23-26 non trouvée. Veuillez d'abord créer la promotion.\n";
+            return;
         }
 
-        // Sauvegarder le fichier de credentials
-        file_put_contents($credentialsFile, $credentials);
+        // Créer ou récupérer l'utilisateur John Doe
+        $user = User::firstOrCreate(
+            ['email' => 'johndoe@gmail.com'],
+            [
+                'name' => 'John Doe',
+                'password' => Hash::make('password'),
+                'role' => 'etudiant',
+                'sexe' => 'M',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
 
-        echo "\nTotal étudiants créés: " . $promotions->count() . "\n";
-        echo "Fichier de credentials sauvegardé: " . $credentialsFile . "\n";
-        echo "Mot de passe pour tous les étudiants: \$helsinki\n";
+        // Créer le profil étudiant pour John Doe
+        $etudiant = Etudiant::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'promotion_id' => $promotion->id,
+            ],
+            [
+                'matricule' => 'ETU2023001',
+                'naissance' => Carbon::create(2000, 5, 15)->toDateString(),
+                'graduation' => Carbon::create(2026, 6, 30)->toDateString(),
+                'parent' => 'Jane Doe',
+                'telephone_parent' => '+237600123999',
+                'statut' => 'actif',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        echo "Étudiant créé avec succès:\n";
+        echo "================================\n";
+        echo "Nom: {$user->name}\n";
+        echo "Email: {$user->email}\n";
+        echo "Matricule: {$etudiant->matricule}\n";
+        echo "Promotion: {$promotion->nom}\n";
+        echo "Date de naissance: {$etudiant->naissance}\n";
+        echo "Date de graduation prévue: {$etudiant->graduation}\n";
+        echo "Parent: {$etudiant->parent}\n";
+        echo "Téléphone parent: {$etudiant->telephone_parent}\n";
+        echo "Statut: {$etudiant->statut}\n";
+        echo "Mot de passe: password\n";
+        echo "================================\n";
     }
 }

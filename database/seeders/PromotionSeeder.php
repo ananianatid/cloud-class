@@ -11,54 +11,25 @@ class PromotionSeeder extends Seeder
      */
     public function run(): void
     {
-        // Récupérer toutes les filières
-        $filieres = \App\Models\Filiere::all();
-
-        // Récupérer tous les diplômes
-        $diplomes = \App\Models\Diplome::all();
-
-        $promotions = [];
-
-        // Créer des promotions pour chaque combinaison filière/diplôme
-        foreach ($filieres as $filiere) {
-            foreach ($diplomes as $diplome) {
-                // Déterminer la durée du diplôme
-                $duree = $this->getDiplomeDuree($diplome->nom);
-
-                // Créer des promotions pour les 3 dernières années
-                for ($i = 0; $i < 3; $i++) {
-                    $anneeDebut = now()->year - 2 + $i;
-                    $anneeFin = $anneeDebut + $duree - 1;
-
-                    // Générer le nom de la promotion
-                    $nom = $this->generatePromotionName($diplome, $filiere, $anneeDebut, $anneeFin);
-
-                    $promotions[] = [
-                        'nom' => $nom,
-                        'diplome_id' => $diplome->id,
-                        'filiere_id' => $filiere->id,
-                        'annee_debut' => $anneeDebut,
-                        'annee_fin' => $anneeFin,
-                        'description' => $diplome->nom . ' ' . $filiere->nom . ' de ' . $anneeDebut . ' à ' . $anneeFin,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
-                }
-            }
-        }
-
-        // Insérer les promotions en évitant les doublons
-        foreach ($promotions as $promotion) {
-            Promotion::updateOrCreate(
-                [
-                    'diplome_id' => $promotion['diplome_id'],
-                    'filiere_id' => $promotion['filiere_id'],
-                    'annee_debut' => $promotion['annee_debut'],
-                    'annee_fin' => $promotion['annee_fin'],
-                ],
-                $promotion
-            );
-        }
+        // Créer une seule promotion 2023-2026 avec 4 semestres
+        $promotion = Promotion::updateOrCreate(
+            [
+                'diplome_id' => 2, // Licence
+                'filiere_id' => 1, // Informatique
+                'annee_debut' => 2023,
+                'annee_fin' => 2026,
+            ],
+            [
+                'nom' => 'LIC-INFO-23-26',
+                'diplome_id' => 2,
+                'filiere_id' => 1,
+                'annee_debut' => 2023,
+                'annee_fin' => 2026,
+                'description' => 'Licence Informatique de 2023 à 2026 - Promotion unique avec 4 semestres',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
     }
 
     /**
