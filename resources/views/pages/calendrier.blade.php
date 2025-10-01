@@ -17,11 +17,12 @@
     </x-slot>
 
     <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Navigation du calendrier -->
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <!-- Navigation du mois/année -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6 text-gray-900">
-                    <div class="flex items-center justify-between">
+                <div class="p-6">
+                    <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+                        <!-- Navigation par mois -->
                         <div class="flex items-center space-x-4">
                             <a href="{{ route('calendrier', ['month' => $prevMonth->month, 'year' => $prevMonth->year]) }}"
                                class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
@@ -39,115 +40,167 @@
                                 </svg>
                             </a>
                         </div>
-                        <a href="{{ route('calendrier') }}"
-                           class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                            Aujourd'hui
-                        </a>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Légende -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-4">
-                    <div class="flex items-center space-x-6 text-sm">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-4 h-4 bg-blue-500 rounded"></div>
-                            <span class="text-gray-600">Cours</span>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <div class="w-4 h-4 bg-green-500 rounded"></div>
-                            <span class="text-gray-600">Événements</span>
+                        <!-- Sélecteur d'année -->
+                        <div class="flex items-center space-x-4">
+                            <label for="year-select" class="text-sm font-medium text-gray-700">Année :</label>
+                            <select id="year-select"
+                                    class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    onchange="changeYear(this.value)">
+                                @foreach($years as $yearOption)
+                                    <option value="{{ $yearOption }}" {{ $yearOption == $year ? 'selected' : '' }}>
+                                        {{ $yearOption }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <a href="{{ route('calendrier') }}"
+                               class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                                Aujourd'hui
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Calendrier -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <!-- Zone de swipe pour mobile -->
+            <div class="md:hidden bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div class="flex items-center justify-center space-x-2 text-blue-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+                    </svg>
+                    <span class="text-sm font-medium">Swipez pour changer de mois</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Liste des événements -->
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg"
+                 x-data="{
+                     currentIndex: 0,
+                     touchStartX: 0,
+                     touchEndX: 0,
+                     handleTouchStart(e) {
+                         this.touchStartX = e.changedTouches[0].screenX;
+                     },
+                     handleTouchEnd(e) {
+                         this.touchEndX = e.changedTouches[0].screenX;
+                         this.handleSwipe();
+                     },
+                     handleSwipe() {
+                         const swipeThreshold = 50;
+                         const diff = this.touchStartX - this.touchEndX;
+
+                         if (Math.abs(diff) > swipeThreshold) {
+                             if (diff > 0) {
+                                 // Swipe gauche - mois suivant
+                                 window.location.href = '{{ route('calendrier', ['month' => $nextMonth->month, 'year' => $nextMonth->year]) }}';
+                             } else {
+                                 // Swipe droite - mois précédent
+                                 window.location.href = '{{ route('calendrier', ['month' => $prevMonth->month, 'year' => $prevMonth->year]) }}';
+                             }
+                         }
+                     }
+                 }"
+                 @touchstart="handleTouchStart"
+                 @touchend="handleTouchEnd">
+
                 <div class="p-6">
-                    <!-- En-têtes des jours -->
-                    <div class="grid grid-cols-7 gap-px bg-gray-200 mb-1">
-                        @foreach(['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'] as $day)
-                            <div class="bg-gray-50 p-3 text-center text-sm font-medium text-gray-500">
-                                {{ $day }}
-                            </div>
-                        @endforeach
-                    </div>
+                    @if($evenements->count() > 0)
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-semibold text-gray-900">
+                                Événements de {{ \Carbon\Carbon::create($year, $month, 1)->locale('fr')->isoFormat('MMMM YYYY') }}
+                            </h3>
+                            <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                                {{ $evenements->count() }} événement{{ $evenements->count() > 1 ? 's' : '' }}
+                            </span>
+                        </div>
 
-                    <!-- Grille du calendrier -->
-                    <div class="grid grid-cols-7 gap-px bg-gray-200">
-                        @foreach($calendar as $week)
-                            @foreach($week as $day)
-                                <div class="bg-white min-h-[120px] p-2 {{ !$day['isCurrentMonth'] ? 'bg-gray-50 text-gray-400' : '' }} {{ $day['isToday'] ? 'bg-blue-50 border-2 border-blue-300' : '' }}">
-                                    <!-- Numéro du jour -->
-                                    <div class="text-sm font-medium mb-2 {{ $day['isToday'] ? 'text-blue-600' : '' }}">
-                                        {{ $day['date']->format('j') }}
-                                    </div>
-
-                                    <!-- Cours -->
-                                    @foreach($day['cours']->take(2) as $cours)
-                                        <div class="mb-1">
-                                            <div class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded truncate"
-                                                 title="{{ $cours->matiere->unite->nom ?? 'Cours' }} - {{ $cours->debut->format('H:i') }}-{{ $cours->fin->format('H:i') }}">
-                                                <div class="font-medium">{{ $cours->debut->format('H:i') }}</div>
-                                                <div class="truncate">{{ $cours->matiere->unite->nom ?? 'Cours' }}</div>
-                                            </div>
+                        <div class="space-y-4">
+                            @foreach($evenements as $evenement)
+                                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
+                                    <div class="flex items-start space-x-4">
+                                        <!-- Indicateur de couleur -->
+                                        <div class="flex-shrink-0">
+                                            <div class="w-4 h-4 rounded-full mt-1" style="background-color: {{ $evenement->couleur }}"></div>
                                         </div>
-                                    @endforeach
 
-                                    <!-- Événements -->
-                                    @foreach($day['evenements']->take(2) as $evenement)
-                                        <div class="mb-1">
+                                        <!-- Contenu de l'événement -->
+                                        <div class="flex-1 min-w-0">
                                             <a href="{{ route('evenement.show', $evenement) }}"
-                                               class="block text-xs px-2 py-1 rounded truncate hover:opacity-80 transition-opacity"
-                                               style="background-color: {{ $evenement->couleur }}20; color: {{ $evenement->couleur }};"
-                                               title="{{ $evenement->titre }}">
-                                                @if($evenement->heure)
-                                                    <div class="font-medium">{{ $evenement->heure->format('H:i') }}</div>
-                                                @endif
-                                                <div class="truncate">{{ $evenement->titre }}</div>
+                                               class="block group">
+                                                <h4 class="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors mb-2">
+                                                    {{ $evenement->titre }}
+                                                </h4>
+
+                                                <div class="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+                                                    <div class="flex items-center space-x-1">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                        </svg>
+                                                        <span>{{ $evenement->date->locale('fr')->isoFormat('dddd D MMMM YYYY') }}</span>
+                                                    </div>
+                                                    @if($evenement->heure)
+                                                        <div class="flex items-center space-x-1">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                            </svg>
+                                                            <span>{{ $evenement->heure->format('H:i') }}</span>
+                                                        </div>
+                                                    @endif
+                                                </div>
+
+                                                <!-- Aperçu du contenu -->
+                                                <div class="text-gray-600 text-sm line-clamp-2">
+                                                    {!! \Illuminate\Support\Str::markdown(\Illuminate\Support\Str::limit(strip_tags($evenement->corps), 150)) !!}
+                                                </div>
                                             </a>
                                         </div>
-                                    @endforeach
 
-                                    <!-- Indicateur s'il y a plus d'éléments -->
-                                    @if($day['cours']->count() + $day['evenements']->count() > 4)
-                                        <div class="text-xs text-gray-500 mt-1">
-                                            +{{ $day['cours']->count() + $day['evenements']->count() - 4 }} autres
-                                        </div>
-                                    @endif
-                                </div>
-                            @endforeach
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <!-- Liste des événements du mois -->
-            @if($evenements->count() > 0)
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-6">
-                    <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Événements du mois</h3>
-                        <div class="space-y-3">
-                            @foreach($evenements as $evenement)
-                                <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                                    <div class="w-3 h-3 rounded-full mt-2" style="background-color: {{ $evenement->couleur }}"></div>
-                                    <div class="flex-1">
-                                        <a href="{{ route('evenement.show', $evenement) }}"
-                                           class="font-medium text-gray-900 hover:text-blue-600 transition-colors">
-                                            {{ $evenement->titre }}
-                                        </a>
-                                        <div class="text-sm text-gray-600">
-                                            {{ $evenement->formatted_date_time }}
+                                        <!-- Flèche -->
+                                        <div class="flex-shrink-0">
+                                            <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                            </svg>
                                         </div>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
-                    </div>
+                    @else
+                        <!-- Message quand aucun événement -->
+                        <div class="text-center py-12">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">Aucun événement</h3>
+                            <p class="mt-1 text-sm text-gray-500">
+                                Aucun événement prévu pour {{ \Carbon\Carbon::create($year, $month, 1)->locale('fr')->isoFormat('MMMM YYYY') }}.
+                            </p>
+                            @if(auth()->user()->role === 'admin')
+                                <div class="mt-6">
+                                    <a href="{{ route('filament.admin.resources.evenements.create') }}"
+                                       class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                        Créer le premier événement
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
                 </div>
-            @endif
+            </div>
         </div>
     </div>
+
+    <script>
+        function changeYear(year) {
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('year', year);
+            window.location.href = currentUrl.toString();
+        }
+    </script>
 </x-app-layout>

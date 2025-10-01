@@ -38,90 +38,32 @@ class CalendarController extends Controller
             $cours = $cours->merge($coursDuMois);
         }
 
-        // Grouper les cours par jour de la semaine (pour l'instant, on ne peut pas filtrer par date)
-        $coursByDate = $cours->groupBy('jour');
-
-        // Grouper les événements par date
+        // Grouper les événements par date pour l'affichage
         $evenementsByDate = $evenements->groupBy(function ($evenement) {
             return $evenement->date->format('Y-m-d');
         });
-
-        // Créer le calendrier mensuel
-        $calendar = $this->buildCalendar($year, $month, $coursByDate, $evenementsByDate);
 
         // Données pour la navigation
         $prevMonth = Carbon::create($year, $month, 1)->subMonth();
         $nextMonth = Carbon::create($year, $month, 1)->addMonth();
 
+        // Générer les options d'années (5 ans avant et après l'année actuelle)
+        $currentYear = now()->year;
+        $years = range($currentYear - 5, $currentYear + 5);
+
         return view('pages.calendrier', compact(
-            'calendar',
             'evenements',
+            'evenementsByDate',
             'cours',
             'month',
             'year',
             'prevMonth',
-            'nextMonth'
+            'nextMonth',
+            'years',
+            'currentYear'
         ));
     }
 
-    private function buildCalendar($year, $month, $coursByDate, $evenementsByDate)
-    {
-        $startOfMonth = Carbon::create($year, $month, 1);
-        $endOfMonth = $startOfMonth->copy()->endOfMonth();
-
-        // Commencer le calendrier au lundi de la première semaine
-        $startOfCalendar = $startOfMonth->copy()->startOfWeek(Carbon::MONDAY);
-        $endOfCalendar = $endOfMonth->copy()->endOfWeek(Carbon::SUNDAY);
-
-        $calendar = [];
-        $current = $startOfCalendar->copy();
-
-        // Mapping des jours de la semaine
-        $joursMapping = [
-            'lundi' => 1,
-            'mardi' => 2,
-            'mercredi' => 3,
-            'jeudi' => 4,
-            'vendredi' => 5,
-            'samedi' => 6,
-            'dimanche' => 0,
-        ];
-
-        while ($current->lte($endOfCalendar)) {
-            $week = [];
-
-            for ($i = 0; $i < 7; $i++) {
-                $date = $current->copy();
-                $dateString = $date->format('Y-m-d');
-
-                // Trouver les cours pour ce jour de la semaine
-                $dayOfWeek = $date->dayOfWeek;
-                $coursDuJour = collect();
-
-                foreach ($coursByDate as $jour => $cours) {
-                    if (isset($joursMapping[$jour]) && $joursMapping[$jour] === $dayOfWeek) {
-                        $coursDuJour = $cours;
-                        break;
-                    }
-                }
-
-                $dayData = [
-                    'date' => $date,
-                    'isCurrentMonth' => $date->month === $month,
-                    'isToday' => $date->isToday(),
-                    'cours' => $coursDuJour,
-                    'evenements' => $evenementsByDate->get($dateString, collect()),
-                ];
-
-                $week[] = $dayData;
-                $current->addDay();
-            }
-
-            $calendar[] = $week;
-        }
-
-        return $calendar;
-    }
 
     public function showEvent(Evenement $evenement)
     {
