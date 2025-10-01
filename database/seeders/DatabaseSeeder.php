@@ -53,5 +53,9 @@ class DatabaseSeeder extends Seeder
 
         // Événements du calendrier
         $this->call(EvenementSeeder::class);
+
+        // Bibliothèque
+        $this->call(CategorieLivreSeeder::class);
+        $this->call(LivreSeeder::class);
     }
 }

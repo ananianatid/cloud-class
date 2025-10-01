@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\CategorieLivre;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\CategorieLivre;
 
 class CategorieLivreSeeder extends Seeder
 {
@@ -15,41 +15,43 @@ class CategorieLivreSeeder extends Seeder
     {
         $categories = [
             [
-                'nom' => 'Informatique',
-                'description' => 'Livres sur la programmation, les technologies et l\'informatique'
+                'nom' => 'Intelligence Artificielle',
+                'description' => 'Livres sur l\'intelligence artificielle, machine learning et data science'
             ],
             [
-                'nom' => 'Sciences',
-                'description' => 'Ouvrages scientifiques et techniques'
+                'nom' => 'Marketing Digital',
+                'description' => 'Livres sur le marketing digital, e-commerce et stratégies en ligne'
             ],
             [
-                'nom' => 'Littérature',
-                'description' => 'Romans, nouvelles et œuvres littéraires'
+                'nom' => 'Systèmes d\'exploitation',
+                'description' => 'Livres sur les systèmes d\'exploitation et l\'administration système'
             ],
             [
-                'nom' => 'Histoire',
-                'description' => 'Livres d\'histoire et de géographie'
+                'nom' => 'Génie Logiciel',
+                'description' => 'Livres sur le développement logiciel, architecture et bonnes pratiques'
             ],
             [
-                'nom' => 'Mathématiques',
-                'description' => 'Manuels et ouvrages de mathématiques'
+                'nom' => 'Génie Civil',
+                'description' => 'Livres sur le génie civil, construction et infrastructure'
             ],
             [
-                'nom' => 'Langues',
-                'description' => 'Livres d\'apprentissage des langues'
-            ],
-            [
-                'nom' => 'Économie',
-                'description' => 'Ouvrages d\'économie et de gestion'
-            ],
-            [
-                'nom' => 'Philosophie',
-                'description' => 'Livres de philosophie et de réflexion'
+                'nom' => 'Informatique Générale',
+                'description' => 'Livres généraux sur l\'informatique et les technologies'
             ]
         ];
 
-        foreach ($categories as $categorie) {
-            CategorieLivre::create($categorie);
+        echo "Création des catégories de livres...\n";
+        echo "===================================\n";
+
+        foreach ($categories as $categorieData) {
+            $categorie = CategorieLivre::updateOrCreate(
+                ['nom' => $categorieData['nom']],
+                $categorieData
+            );
+            echo "✓ Catégorie créée: {$categorie->nom}\n";
         }
+
+        echo "\nTotal des catégories: " . CategorieLivre::count() . "\n";
+        echo "===================================\n";
     }
 }
