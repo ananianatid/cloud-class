@@ -19,6 +19,9 @@ return new class extends Migration
             $table->year('annee_debut');
             $table->year('annee_fin');
             $table->string('description')->nullable();
+            $table->enum('statut', ['actif', 'archive'])
+                  ->default('actif')
+                  ->comment('Statut de la promotion: actif si la date actuelle est comprise entre annee_debut et annee_fin, sinon archive');
             $table->timestamps();
 
             // Contraintes pour éviter les doublons
