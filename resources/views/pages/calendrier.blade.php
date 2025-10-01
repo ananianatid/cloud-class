@@ -43,7 +43,7 @@
 
                         <!-- Sélecteur d'année -->
                         <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                            <label for="year-select" class="text-sm font-medium text-gray-700">Année :</label>
+                            {{-- <label for="year-select" class="text-sm font-medium text-gray-700">Année :</label> --}}
                             <div class="flex items-center space-x-2">
                                 <div class="relative">
                                     <select id="year-select"
