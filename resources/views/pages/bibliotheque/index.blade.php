@@ -192,12 +192,12 @@
                                 navigator.share({
                                     title: bookTitle,
                                     text: `Découvrez ce livre: ${bookTitle} - ${bookAuthor}`,
-                                    url: window.location.href
+                                    url: window.location.origin + `/livre/${bookId}/telecharger`
                                 });
                             } else {
-                                const shareText = `Découvrez ce livre: ${bookTitle} - ${bookAuthor}`;
-                                navigator.clipboard.writeText(shareText).then(() => {
-                                    alert('Lien copié dans le presse-papiers !');
+                                const downloadUrl = window.location.origin + `/livre/${bookId}/telecharger`;
+                                navigator.clipboard.writeText(downloadUrl).then(() => {
+                                    alert('Lien de téléchargement copié dans le presse-papiers !');
                                 });
                             }
                             break;
