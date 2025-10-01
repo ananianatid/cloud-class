@@ -33,16 +33,16 @@
                 @endphp
 
                 <div x-data="{ current: 0, total: {{ count($jours) }}, scrollTo(idx) { this.current = Math.max(0, Math.min(this.total - 1, idx)); this.$refs['card'+this.current].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); } }">
-                    <div class="carousel carousel-center bg-white rounded-box w-full space-x-4 p-4 mx-auto overflow-x-auto">
+                    <div class="carousel carousel-center shadow-md bg-white rounded-box w-full space-x-4 p-4 mx-auto overflow-x-auto">
                         @foreach($jours as $idx => $jour)
                             @php $dayCourses = $grouped[$jour] ?? collect(); @endphp
                             <div x-ref="card{{ $idx }}" class="carousel-item flex flex-col w-80 mx-2">
-                                <div class="bg-white box rounded-full p-4 text-gray-700 flex flex-row items-center justify-center gap-4 mb-4 hover:bg-gray-50 transition-colors duration-200 capitalize font-semibold">
+                                <div class="bg-white  rounded-full p-4 text-gray-700 flex flex-row items-center justify-center gap-4 mb-4 hover:bg-gray-50 transition-colors duration-200 capitalize font-semibold">
                                     {{ $jour }}
                                 </div>
-                                <div class="bg-white box rounded-2xl p-4 text-gray-700 flex flex-col gap-3 mb-4 [&>*]:bg-white">
+                                <div class="bg-white  rounded-2xl p-4 text-gray-700 flex flex-col gap-3 mb-4 [&>*]:bg-white">
                                     @forelse($dayCourses as $c)
-                                        <div class="box rounded-xl flex flex-col gap-1 bg-blue-50 overflow-hidden p-3 border border-blue-200">
+                                        <div class=" rounded-xl flex flex-col gap-1 bg-blue-50 overflow-hidden p-3 border border-blue-200">
                                             <div class="flex justify-between items-center">
                                                 <span class="font-semibold text-blue-700 text-sm md:text-base">{{ $c->debut->format('H:i') }} - {{ $c->fin->format('H:i') }}</span>
                                                 <span class="text-gray-500 text-xs">{{ $c->matiere->unite->code ?? '' }}</span>
