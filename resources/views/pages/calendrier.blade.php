@@ -47,7 +47,7 @@
                             <div class="flex items-center space-x-2">
                                 <div class="relative">
                                     <select id="year-select"
-                                            class="border border-gray-300 rounded-full px-6 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-32 pr-12 appearance-none bg-white"
+                                            class="border border-gray-300 rounded-full px-6 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-32 pr-12 appearance-none bg-white bg-no-repeat bg-right bg-[length:16px] bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjIiIGQ9Ik0xOSA5bC03IDctNy03IiBzdHJva2U9IiM2QjcyODAiLz4KPC9zdmc+')]"
                                             onchange="changeYear(this.value)">
                                         @foreach($years as $yearOption)
                                             <option value="{{ $yearOption }}" {{ $yearOption == $year ? 'selected' : '' }}>
@@ -55,12 +55,6 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    <!-- Icône personnalisée -->
-                                    <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                        </svg>
-                                    </div>
                                 </div>
                                 <a href="{{ route('calendrier') }}"
                                    class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors text-sm whitespace-nowrap">
