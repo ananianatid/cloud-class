@@ -45,7 +45,7 @@
                         <div class="flex items-center space-x-4">
                             <label for="year-select" class="text-sm font-medium text-gray-700">Année :</label>
                             <select id="year-select"
-                                    class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[120px] pr-8"
                                     onchange="changeYear(this.value)">
                                 @foreach($years as $yearOption)
                                     <option value="{{ $yearOption }}" {{ $yearOption == $year ? 'selected' : '' }}>
