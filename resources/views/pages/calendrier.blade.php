@@ -47,7 +47,7 @@
                             <div class="flex items-center space-x-2">
                                 <div class="relative">
                                     <select id="year-select"
-                                            class="border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[120px] pr-10 appearance-none bg-white"
+                                            class="border border-gray-300 rounded-full px-6 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-32 pr-12 appearance-none bg-white"
                                             onchange="changeYear(this.value)">
                                         @foreach($years as $yearOption)
                                             <option value="{{ $yearOption }}" {{ $yearOption == $year ? 'selected' : '' }}>
@@ -56,8 +56,8 @@
                                         @endforeach
                                     </select>
                                     <!-- Icône personnalisée -->
-                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                         </svg>
                                     </div>
@@ -72,18 +72,6 @@
                 </div>
             </div>
 
-            <!-- Zone de swipe pour mobile -->
-            <div class="md:hidden bg-blue-50 border border-blue-200 rounded-2xl p-4 mb-6">
-                <div class="flex items-center justify-center space-x-2 text-blue-700">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
-                    </svg>
-                    <span class="text-sm font-medium">Swipez pour changer de mois</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                    </svg>
-                </div>
-            </div>
 
             <!-- Liste des événements -->
             <div class="bg-white overflow-hidden shadow-sm rounded-2xl"
