@@ -22,7 +22,17 @@
                 this.$refs['card'+this.current].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
             }
         }"
-        x-init="scrollTo(0)"
+        x-init="
+            scrollTo(0);
+            window.scrollToCard = (idx) => $data.scrollTo(idx);
+
+            // Écouter les événements du slider
+            document.addEventListener('slider-change', (e) => {
+                if (e.detail && typeof e.detail.value !== 'undefined') {
+                    $data.scrollTo(e.detail.value);
+                }
+            });
+        "
         class="w-full flex flex-col items-center"
     >
         <div class="carousel carousel-center rounded-box w-full md:max-w-md space-x-4 p-4 mx-auto overflow-x-auto">
@@ -89,15 +99,13 @@
         </div>
 
         <div class="max-w-md mx-auto mt-3 w-full flex justify-center">
-            <input
-                type="range"
-                min="0"
-                max="3"
-                step="1"
-                x-model.number="current"
-                @input="scrollTo(current)"
-                class="range range-primary w-80 mx-auto"
-            >
+            <x-glass-slider
+                :min="0"
+                :max="3"
+                :step="1"
+                :value="0"
+                width="320px"
+            />
         </div>
     </div>
 </x-app-layout>
