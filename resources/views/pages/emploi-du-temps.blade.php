@@ -32,8 +32,15 @@
                     $jours = $joursOrder ?? ['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'];
                 @endphp
 
-                <div x-data="{ current: 0, total: {{ count($jours) }}, scrollTo(idx) { this.current = Math.max(0, Math.min(this.total - 1, idx)); this.$refs['card'+this.current].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); } }">
-                    <div class="carousel carousel-center shadow-md bg-white rounded-box w-full space-x-4 p-4 mx-auto overflow-x-auto">
+                <div x-data="{ current: 0, total: {{ count($jours) }}, scrollTo(idx) { this.current = Math.max(0, Math.min(this.total - 1, idx)); this.$refs['card'+this.current].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); } }" x-init="
+                    // Écouter les événements du slider
+                    document.addEventListener('slider-change', (e) => {
+                        if (e.detail && typeof e.detail.value !== 'undefined') {
+                            $data.scrollTo(e.detail.value);
+                        }
+                    });
+                ">
+                    <div class="carousel carousel-center shadow-md bg-white rounded-3xl w-full space-x-4 p-4 mx-auto overflow-x-auto">
                         @foreach($jours as $idx => $jour)
                             @php $dayCourses = $grouped[$jour] ?? collect(); @endphp
                             <div x-ref="card{{ $idx }}" class="carousel-item flex flex-col w-80 mx-2">
@@ -57,8 +64,14 @@
                             </div>
                         @endforeach
                     </div>
-                    <div class="max-w-md mx-auto mt-3 w-full flex justify-center items-center">
-                        <input type="range" min="0" max="{{ max(0, count($jours) - 1) }}" step="1" x-model.number="current" @input="scrollTo(current)" class="range range-primary w-80 mx-auto">
+                    <div class="max-w-md mx-auto mt-8 w-full flex justify-center items-center">
+                        <x-glass-slider
+                            :min="0"
+                            :max="max(0, count($jours) - 1)"
+                            :step="1"
+                            :value="0"
+                            width="320px"
+                        />
                     </div>
                 </div>
             </div>
