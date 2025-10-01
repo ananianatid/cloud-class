@@ -20,8 +20,13 @@ return new class extends Migration
             $table->string('numero')->change();
         });
 
-        // Mettre à jour les types existants
-        DB::statement("ALTER TABLE salles MODIFY COLUMN type ENUM('cours', 'td_tp', 'laboratoire', 'examen', 'reunion', 'conference', 'atelier', 'studio', 'amphi', 'informatique')");
+        // Mettre à jour les types existants - compatible avec MySQL et SQLite
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE salles MODIFY COLUMN type ENUM('cours', 'td_tp', 'laboratoire', 'examen', 'reunion', 'conference', 'atelier', 'studio', 'amphi', 'informatique')");
+        } else {
+            // Pour SQLite, on ne peut pas modifier l'ENUM directement
+            // On laisse le type tel quel pour les tests
+        }
     }
 
     /**
@@ -34,7 +39,12 @@ return new class extends Migration
             $table->integer('numero')->change();
         });
 
-        // Revenir aux types originaux
-        DB::statement("ALTER TABLE salles MODIFY COLUMN type ENUM('cours','amphi','informatique')");
+        // Revenir aux types originaux - compatible avec MySQL et SQLite
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE salles MODIFY COLUMN type ENUM('cours','amphi','informatique')");
+        } else {
+            // Pour SQLite, on ne peut pas modifier l'ENUM directement
+            // On laisse le type tel quel pour les tests
+        }
     }
 };
