@@ -18,7 +18,8 @@ class AbsenceJustifieeResource extends Resource
     protected static ?string $model = AbsenceJustifiee::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationGroup = 'Ressources pédagogiques';
+    protected static ?int $navigationSort = 5;
     public static function form(Form $form): Form
     {
         return $form

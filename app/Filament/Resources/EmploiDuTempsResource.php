@@ -18,7 +18,8 @@ class EmploiDuTempsResource extends Resource
     protected static ?string $model = EmploiDuTemps::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationGroup = 'Organisation';
+    protected static ?int $navigationSort = 2;
     public static function form(Form $form): Form
     {
         return $form

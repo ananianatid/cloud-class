@@ -18,7 +18,8 @@ class PresenceResource extends Resource
     protected static ?string $model = Presence::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationGroup = 'Ressources pédagogiques';
+    protected static ?int $navigationSort = 4;
     public static function form(Form $form): Form
     {
         return $form

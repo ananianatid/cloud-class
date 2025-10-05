@@ -18,7 +18,8 @@ class UEResource extends Resource
     protected static ?string $model = UE::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationGroup = 'Gestion académique';
+    protected static ?int $navigationSort = 4;
     public static function form(Form $form): Form
     {
         return $form

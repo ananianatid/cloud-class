@@ -18,7 +18,8 @@ class LivreResource extends Resource
     protected static ?string $model = Livre::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationGroup = 'Bibliothèque';
+    protected static ?int $navigationSort = 2;
     public static function form(Form $form): Form
     {
         return $form
