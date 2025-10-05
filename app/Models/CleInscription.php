@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CleInscription extends Model
 {
+    protected $table = 'cle_inscription';
+
     protected $fillable = [
         'token',
         'used_by',
