@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //Ressources pédagogiques
         Schema::create('cahier_presences', function (Blueprint $table) {
             $table->id();
             $table->foreignId('semestre_id')->constrained('semestres')->onDelete('cascade');

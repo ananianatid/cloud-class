@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //Ressources pédagogiques
         Schema::create('absences_justifiees', function (Blueprint $table) {
             $table->id();
             $table->foreignId('etudiant_id')->constrained('etudiants')->onDelete('cascade');

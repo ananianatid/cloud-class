@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //Ressources pédagogiques
         Schema::create('textes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('occurrence_id')->constrained('seances_occurrences')->onDelete('cascade');
