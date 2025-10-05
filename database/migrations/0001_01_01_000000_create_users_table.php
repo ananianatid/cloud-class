@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Gestion utilisateurs et permissions
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -18,6 +19,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
 

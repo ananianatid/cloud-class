@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Gestion utilisateurs et permissions
         Schema::create('role_user', function (Blueprint $table) {
             $table->id();
             $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
