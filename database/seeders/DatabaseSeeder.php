@@ -34,28 +34,28 @@ class DatabaseSeeder extends Seeder
         $this->call(FiliereSeeder::class);
         $this->call(UniteEnseignementSeeder::class);
 
-        // Promotion et semestres
-        $this->call(PromotionSeeder::class);
-        $this->call(SemestreSeeder::class);
+        // // Promotion et semestres
+        // $this->call(PromotionSeeder::class);
+        // $this->call(SemestreSeeder::class);
 
         // Utilisateurs
-        $this->call(EnseignantSeeder::class);
+        // $this->call(EnseignantSeeder::class);
         $this->call(AdministrateurSeeder::class);
-        $this->call(EtudiantSeeder::class);
+        // $this->call(EtudiantSeeder::class);
 
-        // Matières et emplois du temps
-        $this->call(MatiereSeeder::class);
-        $this->call(EmploiDuTempsSeeder::class);
-        $this->call(CoursSeeder::class);
+        // // Matières et emplois du temps
+        // $this->call(MatiereSeeder::class);
+        // $this->call(EmploiDuTempsSeeder::class);
+        // $this->call(CoursSeeder::class);
 
-        // Clés d'inscription
-        $this->call(EnrollmentKeySeeder::class);
+        // // Clés d'inscription
+        // $this->call(EnrollmentKeySeeder::class);
 
-        // Événements du calendrier
-        $this->call(EvenementSeeder::class);
+        // // Événements du calendrier
+        // $this->call(EvenementSeeder::class);
 
-        // Bibliothèque
-        $this->call(CategorieLivreSeeder::class);
-        $this->call(LivreSeeder::class);
+        // // Bibliothèque
+        // $this->call(CategorieLivreSeeder::class);
+        // $this->call(LivreSeeder::class);
     }
 }
