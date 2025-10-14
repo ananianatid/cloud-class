@@ -34,9 +34,15 @@ class EnseignantResource extends Resource
                     ->required(),
                 Forms\Components\Textarea::make('bio')
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('statut')
-                    ->required(),
-            ]);
+                Forms\Components\Select::make('statut')
+                    ->required()
+                    ->options([
+                        'permanent' => 'Permanent',
+                        'vacataire' => 'Vacataire',
+                        'invite' => 'Invité',
+                    ])
+                    ->default('permanent'),
+    ]);
     }
 
     public static function table(Table $table): Table
