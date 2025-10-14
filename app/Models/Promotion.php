@@ -57,9 +57,9 @@ class Promotion extends Model
             throw new \InvalidArgumentException('L\'année de fin doit être entre 2000 et 2100');
         }
 
-        if ($promotion->annee_fin < $promotion->annee_debut) {
-            throw new \InvalidArgumentException('L\'année de fin doit être supérieure ou égale à l\'année de début');
-        }
+        // if ($promotion->annee_fin < $promotion->annee_debut) {
+        //     throw new \InvalidArgumentException('L\'année de fin doit être supérieure ou égale à l\'année de début');
+        // }
 
         // Vérifier l'unicité
         $existing = static::where('diplome_id', $promotion->diplome_id)
