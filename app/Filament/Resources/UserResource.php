@@ -66,12 +66,21 @@ class UserResource extends Resource
                     ->label('Téléphone')
                     ->tel()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('role')
+                Forms\Components\Select::make('role')
                     ->label('Rôle')
-                    ->required(),
-                Forms\Components\TextInput::make('sexe')
+                    ->required()
+                    ->options([
+                        'etudiant' => 'Étudiant',
+                        'enseignant' => 'Enseignant',
+                        'administrateur' => 'Administrateur',
+                    ]),
+                Forms\Components\Select::make('sexe')
                     ->label('Sexe')
-                    ->required(),
+                    ->required()
+                    ->options([
+                        'M' => 'Masculin',
+                        'F' => 'Féminin',
+                    ]),
             ]);
     }
 
