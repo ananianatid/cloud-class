@@ -103,11 +103,11 @@ class PromotionResource extends Resource
                         ));
                     })
                     ->required()
-                    ->rules(['required', 'integer', 'min:2000', 'max:2100', 'gte:annee_debut'])
+                    ->rules(['required', 'integer', 'min:2000', 'max:2100'])
                     ->validationMessages([
                         'min' => 'L\'année de fin doit être supérieure ou égale à 2000',
                         'max' => 'L\'année de fin doit être inférieure ou égale à 2100',
-                        'gte' => 'L\'année de fin doit être supérieure ou égale à l\'année de début',
+                        // 'gte' => 'L\'année de fin doit être supérieure ou égale à l\'année de début',
                     ]),
                 Forms\Components\TextInput::make('description')
                     ->maxLength(255),
